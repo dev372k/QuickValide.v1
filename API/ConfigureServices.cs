@@ -1,4 +1,6 @@
-﻿namespace ApiService;
+﻿using Shared.Commons;
+
+namespace ApiService;
 
 public static class ConfigureServices
 {
@@ -7,7 +9,7 @@ public static class ConfigureServices
         services.Repositories(configuration);
         services.Services(configuration);
         services.Database(configuration);
-        services.Misc(configuration);
+        services.Misc();
     }
 
     public static void Repositories(this IServiceCollection services, IConfiguration configuration)
@@ -15,16 +17,15 @@ public static class ConfigureServices
 
     }
 
-    public static void Misc(this IServiceCollection services, IConfiguration configuration)
+    public static void Misc(this IServiceCollection services)
     {
-        services.AddCors(opt =>
+        services.AddCors(options =>
         {
-            opt.AddPolicy(name: "_policy", builder =>
+            options.AddPolicy(MiscilenousConstants._policy, builder =>
             {
                 builder.AllowAnyOrigin()
-                    .AllowAnyHeader()
-                    .AllowAnyMethod()
-                    .AllowAnyOrigin();
+                       .AllowAnyHeader()
+                       .AllowAnyMethod();
             });
         });
     }

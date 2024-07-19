@@ -10,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.ServicesRegistry(builder.Configuration);
+
 Log.Logger = new LoggerConfiguration()
 .MinimumLevel.Warning()
     .WriteTo.File(MiscilenousConstants.LOGPATH, rollingInterval: RollingInterval.Day)
@@ -21,12 +22,12 @@ builder.Logging.AddSerilog();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+//// Configure the HTTP request pipeline.
+//if (app.Environment.IsDevelopment())
+//{
+app.UseSwagger();
+app.UseSwaggerUI();
+//}
 app.UseCors(MiscilenousConstants._policy);
 app.UseHttpsRedirection();
 
