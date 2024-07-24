@@ -3,6 +3,9 @@ using Shared.DTOs.UserDTOs;
 using Shared.Helpers;
 using Domain.Repositories;
 using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
+using Shared.Exceptions;
+using System.Net;
 
 namespace Application.Implementations;
 
@@ -15,11 +18,11 @@ public class UserRepo : IUserRepo
         _context = context;
     }
 
-    public void Add(RegisterDTO dto)
+    public async Task AddAsync(AddUserDTO dto)
     {
-        var userExist = Get(dto.Email);
+        var userExist = GetAsync(dto.Email);
         if (userExist != null)
-            throw new Exception("User already exist with this email");
+            throw new CustomException(HttpStatusCode.OK, "User already exist with this email");
 
         var user = new User
         {
@@ -28,25 +31,39 @@ public class UserRepo : IUserRepo
             Password = SecurityHelper.GenerateHash(dto.Password),
             CreatedAt = DateTime.Now,
         };
+
         _context.Users.Add(user);
         _context.SaveChanges();
     }
 
-    public GetUserDTO Get(string email)
+    public async Task<GetUserDTO> GetAsync(string email)
     {
-        GetUserDTO? user = _context.Users.Where(_ => _.Email.ToLower().Equals(email.ToLower())).Select(_ => new GetUserDTO
+        return await _context.Users.Where(_ => _.Email.ToLower().Equals(email.ToLower())).Select(_ => new GetUserDTO
         {
             Id = _.Id,
             Email = _.Email,
             Name = _.Name,
             Password = SecurityHelper.GenerateHash(_.Password),
-        }).FirstOrDefault();
-        return user;
+        }).FirstOrDefaultAsync() ?? throw new CustomException(HttpStatusCode.OK, "No such user exist.");
     }
 
-    public void Update(UpdateUserDTO dto)
+    public async Task<GetUserDTO> GetAsync(int id)
     {
-        var user = _context.Users.FirstOrDefault(_ => _.Id == dto.Id);
+        return await _context.Users.Where(_ => _.Id == id).Select(_ => new GetUserDTO
+        {
+            Id = _.Id,
+            Email = _.Email,
+            Name = _.Name,
+            Password = SecurityHelper.GenerateHash(_.Password),
+        }).FirstOrDefaultAsync() ?? throw new CustomException(HttpStatusCode.OK, "No such user exist.");
+    }
+
+    public async Task UpdateAsync(int id, UpdateUserDTO dto)
+    {
+        var user = await GetAsync(id);
+        if (user == null)
+            throw new Exception("User doesn't exist.");
+
         if (user != null)
         {
             user.Name = dto.Name;
@@ -54,7 +71,7 @@ public class UserRepo : IUserRepo
         }
     }
 
-    public IQueryable<GetUserDTO> Get()
+    public async Task<IQueryable<GetUserDTO>> GetAsync()
     {
         var users = _context.Users.Select(_ => new GetUserDTO
         {
@@ -69,19 +86,13 @@ public class UserRepo : IUserRepo
         return users;
     }
 
-    public void UpdateStatus(int userId, bool status)
+    public async Task UpdateStatusAsync(int id, bool status)
     {
-        var user = _context.Users.FirstOrDefault(_ => _.Id == userId);
+        var user = await _context.Users.FirstOrDefaultAsync(_ => _.Id == id);
         if (user != null)
         {
             user.IsDeleted = status;
             _context.SaveChanges();
         }
-    }
-
-    public (int, int) Count()
-    {
-        var users = _context.Users;
-        return (users.Where(_ => !_.IsDeleted).Count(), users.Where(_ => _.IsDeleted).Count());
     }
 }

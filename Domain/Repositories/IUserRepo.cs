@@ -4,9 +4,10 @@ namespace Domain.Repositories;
 
 public interface IUserRepo
 {
-    GetUserDTO Get(string email);
-    void Add(RegisterDTO dto);
-    void Update(UpdateUserDTO dto);
-    IQueryable<GetUserDTO> Get();
-    void UpdateStatus(int userId, bool status);
+    Task<GetUserDTO> GetAsync(string email);
+    Task<GetUserDTO> GetAsync(int id);
+    Task AddAsync(AddUserDTO dto);
+    Task UpdateAsync(int id, UpdateUserDTO dto);
+    Task<IQueryable<GetUserDTO>> GetAsync();
+    Task UpdateStatusAsync(int id, bool status);
 }
