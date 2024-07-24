@@ -44,7 +44,7 @@ public class App : BaseEntity
 
     public string AboutUs { get; set; }
 
-    public virtual ICollection<WaitList> WaitLists { get; set; }
+    public virtual ICollection<Waitlist> WaitLists { get; set; }
 
     public virtual User User { get; set; }
 }

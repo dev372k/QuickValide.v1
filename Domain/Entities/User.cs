@@ -1,5 +1,6 @@
 ﻿using Domain.Entities;
 using Domain.Entities.Base;
+using Shared.Commons;
 using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Entities;
@@ -16,6 +17,8 @@ public class User : BaseEntity
 
     [Required]
     public string Password { get; set; }
+
+    public enRole Role { get; set; }
 
     public virtual ICollection<UserSubscription> UserSubscriptions { get; set; }
 
