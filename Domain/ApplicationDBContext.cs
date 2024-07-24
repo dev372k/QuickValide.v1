@@ -1,6 +1,5 @@
 ﻿using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using Shared.Helpers;
 
 namespace Domain;
 

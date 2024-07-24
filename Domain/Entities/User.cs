@@ -1,10 +1,23 @@
-﻿using Domain.Entities.Base;
+﻿using Domain.Entities;
+using Domain.Entities.Base;
+using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Entities;
 
 public class User : BaseEntity
 {
-    public string Name { get; set; } = String.Empty;
-    public string Email { get; set; } = String.Empty;
-    public string PasswordHash { get; set; } = String.Empty;
+    [Required]
+    [MaxLength(255)]
+    public string Name { get; set; }
+
+    [Required]
+    [EmailAddress]
+    public string Email { get; set; }
+
+    [Required]
+    public string Password { get; set; }
+
+    public virtual ICollection<UserSubscription> UserSubscriptions { get; set; }
+
+    public virtual ICollection<App> Apps { get; set; }
 }
