@@ -6,6 +6,7 @@ using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Shared.Exceptions;
 using System.Net;
+using Shared.Exceptions.Messages;
 
 namespace Application.Implementations;
 
@@ -22,7 +23,7 @@ public class UserRepo : IUserRepo
     {
         var userExist = GetAsync(dto.Email);
         if (userExist != null)
-            throw new CustomException(HttpStatusCode.OK, "User already exist with this email");
+            throw new CustomException(HttpStatusCode.OK, ExceptionMessages.USER_ALREADY_EXIST);
 
         var user = new User
         {
@@ -44,7 +45,7 @@ public class UserRepo : IUserRepo
             Email = _.Email,
             Name = _.Name,
             Password = SecurityHelper.GenerateHash(_.Password),
-        }).FirstOrDefaultAsync() ?? throw new CustomException(HttpStatusCode.OK, "No such user exist.");
+        }).FirstOrDefaultAsync() ?? throw new CustomException(HttpStatusCode.OK, ExceptionMessages.USER_DOESNOT_EXIST);
     }
 
     public async Task<GetUserDTO> GetAsync(int id)
@@ -55,18 +56,31 @@ public class UserRepo : IUserRepo
             Email = _.Email,
             Name = _.Name,
             Password = SecurityHelper.GenerateHash(_.Password),
-        }).FirstOrDefaultAsync() ?? throw new CustomException(HttpStatusCode.OK, "No such user exist.");
+        }).FirstOrDefaultAsync() ?? throw new CustomException(HttpStatusCode.OK, ExceptionMessages.USER_DOESNOT_EXIST);
     }
 
     public async Task UpdateAsync(int id, UpdateUserDTO dto)
     {
         var user = await GetAsync(id);
         if (user == null)
-            throw new Exception("User doesn't exist.");
+            throw new Exception(ExceptionMessages.USER_DOESNOT_EXIST);
 
         if (user != null)
         {
             user.Name = dto.Name;
+            _context.SaveChanges();
+        }
+    }
+    
+    public async Task DeleteAsync(int id)
+    {
+        var user = await GetAsync(id);
+        if (user == null)
+            throw new Exception(ExceptionMessages.USER_DOESNOT_EXIST);
+
+        if (user != null)
+        {
+            user.IsDeleted = true;
             _context.SaveChanges();
         }
     }

@@ -8,6 +8,7 @@ public interface IUserRepo
     Task<GetUserDTO> GetAsync(int id);
     Task AddAsync(AddUserDTO dto);
     Task UpdateAsync(int id, UpdateUserDTO dto);
+    Task DeleteAsync(int id);
     Task<IQueryable<GetUserDTO>> GetAsync();
     Task UpdateStatusAsync(int id, bool status);
 }
