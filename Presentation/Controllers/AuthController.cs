@@ -31,7 +31,7 @@ public class AuthController(IUserRepo _userRepo) : ControllerBase
         => Ok(await _userRepo.GetAsync().ToResponseAsync());
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> Get(string id)
+    public async Task<IActionResult> Get(int id)
         => Ok(await _userRepo.GetAsync(id).ToResponseAsync());
 
     [HttpPut("{id}")]

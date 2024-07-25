@@ -88,6 +88,7 @@ public static class ConfigureServices
         services.AddSingleton<IStateHelper, StateHelper>();
         services.AddScoped<IFileService, FileService>();
         services.AddScoped<IEmailService, EmailService>();
+        services.AddScoped<IGPTService, GPTService>();
     }
 
     public static void Database(this IServiceCollection services, IConfiguration configuration)
