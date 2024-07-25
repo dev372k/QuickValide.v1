@@ -126,7 +126,6 @@ public class UserRepo : IUserRepo
                 Role = enRole.User.ToString()
             });
         }
-
     }
 
     public async Task DeleteAsync(int id)
