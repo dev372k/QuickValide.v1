@@ -101,7 +101,7 @@ public class UserRepo : IUserRepo
     {
         var payload = await GoogleJsonWebSignature.ValidateAsync(dto.IdToken);
 
-        var user = await GetAsync(payload.Email);
+        var user = await _context.Users.FirstOrDefaultAsync(_ => _.Email == payload.Email);
         if (user != null)
             return JWTHelper.CreateToken(new GetUserDTO
             {
