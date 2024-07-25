@@ -11,7 +11,7 @@
                 const idToken = response.credential;
 
                 // Send the ID token to the backend
-                const backendResponse = await fetch('https://localhost:44392/api/auth/google', {
+                const backendResponse = await fetch('https://api.quickvalide.com/api/auth/google', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
