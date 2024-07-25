@@ -42,7 +42,7 @@ public class ResponseModel<T>
     public bool Status { get; set; } = true;
     public int StatusCode { get; set; } = 200;
     public string Message { get; set; } = string.Empty;
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    //[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public T Data { get; set; }
 }
 

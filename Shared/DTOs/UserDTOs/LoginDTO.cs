@@ -8,6 +8,11 @@ namespace Shared.DTOs.UserDTOs
 {
     public class LoginDTO
     {
+        public LoginDTO()
+        {
+            Email = Email.Trim();
+        }
+
         public string Email { get; set; } = String.Empty;
         public string Password { get; set; } = String.Empty;
     }

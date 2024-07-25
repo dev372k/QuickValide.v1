@@ -13,4 +13,5 @@ public interface IUserRepo
     Task<string> LoginAsync(LoginDTO dto);
     Task<string> GoogleLoginAsync(GoogleLoginDTO dto);
     Task UpdateStatusAsync(int id, bool status);
+    Task UpdatePasswordAsync(string email);
 }

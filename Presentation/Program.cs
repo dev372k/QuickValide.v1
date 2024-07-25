@@ -1,3 +1,4 @@
+using API.Middlewares;
 using ApiService;
 using Serilog;
 using Shared.Commons;
@@ -30,7 +31,7 @@ var app = builder.Build();
 //}
 
 app.UseHttpsRedirection();
-
+app.UseMiddleware<CustomMiddleware>();
 app.UseAuthorization();
 app.UseStaticFiles();
 app.MapControllers();

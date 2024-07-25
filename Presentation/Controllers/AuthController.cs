@@ -10,8 +10,8 @@ namespace API.Controllers;
 [ApiController]
 public class AuthController(IUserRepo _userRepo) : ControllerBase
 {
-    [HttpPost("register")]
-    public async Task<IActionResult> Register(AddUserDTO request)
+    [HttpPost]
+    public async Task<IActionResult> Post(AddUserDTO request)
         => Ok(await _userRepo.AddAsync(request).ToResponseAsync(message: ResponseMessages.USER_ADDED));
 
     [HttpPost("login")]
@@ -19,8 +19,12 @@ public class AuthController(IUserRepo _userRepo) : ControllerBase
         => Ok(await _userRepo.LoginAsync(request).ToResponseAsync());
 
     [HttpPost("google")]
-    public async Task<IActionResult> GoogleLogin(GoogleLoginDTO request)
+    public async Task<IActionResult> Google(GoogleLoginDTO request)
         => Ok(await _userRepo.GoogleLoginAsync(request).ToResponseAsync());
+    
+    [HttpPost("forgot-password/{email}")]
+    public async Task<IActionResult> ForgetPassword(string email)
+        => Ok(await _userRepo.UpdatePasswordAsync(email).ToResponseAsync(message: ResponseMessages.NEW_PASSWORD_SENT));
 
     [HttpGet]
     public async Task<IActionResult> Get()

@@ -9,21 +9,24 @@ using System.Net;
 using Shared.Exceptions.Messages;
 using Shared.Commons;
 using Google.Apis.Auth;
+using Domain.Repositories.Services;
 
 namespace Application.Implementations;
 
 public class UserRepo : IUserRepo
 {
     private ApplicationDBContext _context;
+    private IEmailService _emailService;
 
-    public UserRepo(ApplicationDBContext context)
+    public UserRepo(ApplicationDBContext context, IEmailService emailService)
     {
         _context = context;
+        _emailService = emailService;
     }
 
     public async Task<int> AddAsync(AddUserDTO dto)
     {
-        var userExist = GetAsync(dto.Email);
+        var userExist = await _context.Users.FirstOrDefaultAsync(_ => _.Email == dto.Email);
         if (userExist != null)
             throw new CustomException(HttpStatusCode.OK, ExceptionMessages.USER_ALREADY_EXIST);
 
@@ -50,7 +53,7 @@ public class UserRepo : IUserRepo
             Email = _.Email,
             Name = _.Name,
             Role = _.Role.ToString(),
-            Password = SecurityHelper.GenerateHash(_.Password),
+            Password = _.Password,
         }).FirstOrDefaultAsync() ?? throw new CustomException(HttpStatusCode.OK, ExceptionMessages.USER_DOESNOT_EXIST);
     }
 
@@ -62,21 +65,19 @@ public class UserRepo : IUserRepo
             Email = _.Email,
             Name = _.Name,
             Role = _.Role.ToString(),
-            Password = SecurityHelper.GenerateHash(_.Password),
+            Password = _.Password,
         }).FirstOrDefaultAsync() ?? throw new CustomException(HttpStatusCode.OK, ExceptionMessages.USER_DOESNOT_EXIST);
     }
 
     public async Task UpdateAsync(int id, UpdateUserDTO dto)
     {
-        var user = await GetAsync(id);
+        var user = await _context.Users.FirstOrDefaultAsync(_ => _.Id == id);
         if (user == null)
-            throw new Exception(ExceptionMessages.USER_DOESNOT_EXIST);
+            throw new CustomException(HttpStatusCode.OK, ExceptionMessages.USER_DOESNOT_EXIST);
 
-        if (user != null)
-        {
-            user.Name = dto.Name;
-            _context.SaveChanges();
-        }
+        user.Name = dto.Name;
+        _context.SaveChanges();
+
     }
 
     public async Task<string> LoginAsync(LoginDTO dto)
@@ -84,8 +85,7 @@ public class UserRepo : IUserRepo
         var user = await GetAsync(dto.Email);
         if (user == null)
             throw new CustomException(HttpStatusCode.OK, ExceptionMessages.USER_DOESNOT_EXIST);
-
-        if (!SecurityHelper.ValidateHash(dto.Password, user.Password))
+        else if (!SecurityHelper.ValidateHash(dto.Password, user.Password))
             throw new CustomException(HttpStatusCode.OK, ExceptionMessages.INVALID_CREDENTIALS);
 
         return JWTHelper.CreateToken(new GetUserDTO
@@ -132,9 +132,6 @@ public class UserRepo : IUserRepo
     public async Task DeleteAsync(int id)
     {
         var user = await GetAsync(id);
-        if (user == null)
-            throw new Exception(ExceptionMessages.USER_DOESNOT_EXIST);
-
         if (user != null)
         {
             user.IsDeleted = true;
@@ -160,10 +157,24 @@ public class UserRepo : IUserRepo
     public async Task UpdateStatusAsync(int id, bool status)
     {
         var user = await _context.Users.FirstOrDefaultAsync(_ => _.Id == id);
-        if (user != null)
-        {
-            user.IsDeleted = status;
-            _context.SaveChanges();
-        }
+        if (user == null)
+            throw new CustomException(HttpStatusCode.OK, ExceptionMessages.USER_DOESNOT_EXIST);
+
+        user.IsDeleted = status;
+        _context.SaveChanges();
+
+    }
+
+    public async Task UpdatePasswordAsync(string email)
+    {
+        var user = await _context.Users.FirstOrDefaultAsync(_ => _.Email == email);
+        if (user == null)
+            throw new CustomException(HttpStatusCode.OK, ExceptionMessages.USER_DOESNOT_EXIST);
+
+        string newPassword = SecurityHelper.GeneratePassword();
+        user.Password = SecurityHelper.GenerateHash(newPassword);
+        await _context.SaveChangesAsync();
+        await _emailService.SendEmailAsync(email, EmailTemplate.NEW_PASSWORD_SUBJECT, string.Format(EmailTemplate.NEW_PASSWORD_BODY, newPassword));
+
     }
 }
