@@ -1,4 +1,5 @@
 ﻿using Domain.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Commons;
 using Shared.DTOs.UserDTOs;
@@ -26,19 +27,23 @@ public class AuthController(IUserRepo _userRepo) : ControllerBase
     public async Task<IActionResult> ForgetPassword(string email)
         => Ok(await _userRepo.UpdatePasswordAsync(email).ToResponseAsync(message: ResponseMessages.NEW_PASSWORD_SENT));
 
-    [HttpGet]
+    [HttpGet, Authorize]
+    [IsAuthorized(["Admin"])]
     public async Task<IActionResult> Get()
         => Ok(await _userRepo.GetAsync().ToResponseAsync());
 
-    [HttpGet("{id}")]
-    public async Task<IActionResult> Get(string id)
+    [HttpGet("{id}"),Authorize]
+    [IsAuthorized(["Admin", "User"])]
+    public async Task<IActionResult> Get(int id)
         => Ok(await _userRepo.GetAsync(id).ToResponseAsync());
 
-    [HttpPut("{id}")]
+    [HttpPut("{id}"), Authorize]
+    [IsAuthorized(["Admin", "User"])]
     public async Task<IActionResult> Put(int id, UpdateUserDTO request)
         => Ok(await _userRepo.UpdateAsync(id, request).ToResponseAsync(message: ResponseMessages.USER_DELETED));
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id}"), Authorize]
+    [IsAuthorized(["Admin", "User"])]
     public async Task<IActionResult> Delete(int id)
         => Ok(await _userRepo.DeleteAsync(id).ToResponseAsync(message: ResponseMessages.USER_DELETED));
 }
