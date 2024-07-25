@@ -2,7 +2,7 @@
 using Shared.Extensions;
 using System.Net;
 
-namespace API.Middlewares
+namespace Presentation.Middlewares
 {
     public class CustomMiddleware
     {
@@ -41,7 +41,7 @@ namespace API.Middlewares
             catch (CustomException ex)
             {
                 _logger.LogError($"Error Message: {ex}\n Error Detail: {ex.InnerException?.ToString()}");
-                await context.Response.WriteAsJsonAsync(new ResponseModel   
+                await context.Response.WriteAsJsonAsync(new ResponseModel
                 {
                     Status = false,
                     StatusCode = (int)ex.StatusCode,

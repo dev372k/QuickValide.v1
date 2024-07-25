@@ -1,7 +1,7 @@
 2024-07-19 16:26:55.025 +05:00 [ERR] An unhandled exception has occurred while executing the request.
 System.AggregateException: One or more errors occurred. (Object reference not set to an instance of an object.)
  ---> System.NullReferenceException: Object reference not set to an instance of an object.
-   at ApiService.Endpoints.AppConfiguration.GetAppConfig() in C:\Users\nexno\source\repos\QuickValide.v1\API\Endpoints\AppEndpoints.cs:line 21
+   at ApiService.Endpoints.AddAppDTOuration.GetAddAppDTO() in C:\Users\nexno\source\repos\QuickValide.v1\API\Endpoints\AppEndpoints.cs:line 21
    at Shared.Extensions.JSONResponse.ToResponseAsync[T](Task`1 task, Boolean status, Int32 statusCode, String message, Object data) in C:\Users\nexno\source\repos\QuickValide.v1\Shared\Extensions\JSONResponse.cs:line 9
    --- End of inner exception stack trace ---
    at System.Threading.Tasks.Task.ThrowIfExceptional(Boolean includeTaskCanceledExceptions)

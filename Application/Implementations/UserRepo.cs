@@ -1,12 +1,12 @@
 ﻿using Domain;
 using Shared.DTOs.UserDTOs;
 using Shared.Helpers;
-using Domain.Repositories;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Shared.Exceptions;
 using System.Net;
 using Shared.Exceptions.Messages;
+using Domain.IRepositories;
 
 namespace Application.Implementations;
 

@@ -1,6 +1,6 @@
 ﻿using Shared.DTOs.UserDTOs;
 
-namespace Domain.Repositories;
+namespace Domain.IRepositories;
 
 public interface IUserRepo
 {

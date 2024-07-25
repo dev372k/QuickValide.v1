@@ -1,4 +1,4 @@
-﻿namespace ApiService;
+﻿namespace Presentation;
 
 public static class ConfigureServices
 {

@@ -14,7 +14,7 @@ namespace Shared.Helpers
             Appsettings appsettings = Appsettings.Instance;
             List<Claim> claims = new List<Claim> {
                 new Claim(ClaimTypes.Name, user.Email),
-                new Claim(ClaimTypes.Role, user.Role),
+                //new Claim(ClaimTypes.Role, user.Role),
                 new Claim(ClaimTypes.UserData, JsonConvert.SerializeObject(user)),
             };
 
