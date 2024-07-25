@@ -75,4 +75,39 @@ public class PaymentGateway : IPaymentGateway
         StripeList<PaymentMethod> paymentMethods = await new PaymentMethodService().ListAsync(options);
         return paymentMethods.Data;
     }
+
+
+    public Subscription Create(string customerId, string planId)
+    {
+        var options = new SubscriptionCreateOptions
+        {
+            Customer = customerId,
+            Items = new List<SubscriptionItemOptions>
+            {
+                new SubscriptionItemOptions
+                {
+                    Plan = planId,
+                },
+            },
+        };
+
+        var service = new SubscriptionService();
+        var subscription = service.Create(options);
+        return subscription;
+    }
+
+    public async Task<StripeList<Subscription>> Get()
+    {
+        var options = new SubscriptionListOptions { Limit = 3 };
+        var service = new SubscriptionService();
+        StripeList<Subscription> subscriptions = await service.ListAsync(options);
+        return subscriptions;
+    }
+
+    public async Task<Subscription> Get(string subscriptionId)
+    {
+        var service = new SubscriptionService();
+        var subscription = await service.GetAsync(subscriptionId);
+        return subscription;
+    }
 }

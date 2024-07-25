@@ -89,6 +89,7 @@ public static class ConfigureServices
         services.AddScoped<IFileService, FileService>();
         services.AddScoped<IEmailService, EmailService>();
         services.AddScoped<IGPTService, GPTService>();
+        services.AddScoped<IPaymentGateway, PaymentGateway>();
     }
 
     public static void Database(this IServiceCollection services, IConfiguration configuration)

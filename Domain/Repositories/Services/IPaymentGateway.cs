@@ -8,4 +8,7 @@ public interface IPaymentGateway
     Task<Customer> CreateCustomersync(string email, string name, string cardToken);
     Task<Card> GetCustomerCardAsync(string customerId, string cardId);
     Task<List<PaymentMethod>> GetCustomerPaymentMethodsAsync(string customerId);
+    Subscription Create(string customerId, string planId);
+    Task<StripeList<Subscription>> Get();
+    Task<Subscription> Get(string subscriptionId);
 }
