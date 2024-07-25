@@ -1,4 +1,7 @@
-﻿namespace ApiService;
+﻿using Domain;
+using Microsoft.EntityFrameworkCore;
+
+namespace ApiService;
 
 public static class ConfigureServices
 {
@@ -36,6 +39,6 @@ public static class ConfigureServices
 
     public static void Database(this IServiceCollection services, IConfiguration configuration)
     {
-        //services.AddDbContextPool<ApplicationDBContext>(opt => opt.UseSqlServer(configuration.GetConnectionString("cs")));
+        services.AddDbContextPool<ApplicationDBContext>(opt => opt.UseSqlServer(configuration.GetConnectionString("cs")));
     }
 }

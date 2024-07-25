@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using Shared.Exceptions;
 using System.Net;
 using Shared.Exceptions.Messages;
+using Shared.Commons;
+using Google.Apis.Auth;
 
 namespace Application.Implementations;
 
@@ -19,7 +21,7 @@ public class UserRepo : IUserRepo
         _context = context;
     }
 
-    public async Task AddAsync(AddUserDTO dto)
+    public async Task<int> AddAsync(AddUserDTO dto)
     {
         var userExist = GetAsync(dto.Email);
         if (userExist != null)
@@ -29,12 +31,15 @@ public class UserRepo : IUserRepo
         {
             Name = dto.Name,
             Email = dto.Email,
-            Password = SecurityHelper.GenerateHash(dto.Password),
+            Role = enRole.User,
+            Password = !String.IsNullOrEmpty(dto.Password) ? SecurityHelper.GenerateHash(dto.Password) : String.Empty,
             CreatedAt = DateTime.Now,
         };
 
         _context.Users.Add(user);
         _context.SaveChanges();
+
+        return user.Id;
     }
 
     public async Task<GetUserDTO> GetAsync(string email)
@@ -44,6 +49,7 @@ public class UserRepo : IUserRepo
             Id = _.Id,
             Email = _.Email,
             Name = _.Name,
+            Role = _.Role.ToString(),
             Password = SecurityHelper.GenerateHash(_.Password),
         }).FirstOrDefaultAsync() ?? throw new CustomException(HttpStatusCode.OK, ExceptionMessages.USER_DOESNOT_EXIST);
     }
@@ -55,6 +61,7 @@ public class UserRepo : IUserRepo
             Id = _.Id,
             Email = _.Email,
             Name = _.Name,
+            Role = _.Role.ToString(),
             Password = SecurityHelper.GenerateHash(_.Password),
         }).FirstOrDefaultAsync() ?? throw new CustomException(HttpStatusCode.OK, ExceptionMessages.USER_DOESNOT_EXIST);
     }
@@ -71,7 +78,57 @@ public class UserRepo : IUserRepo
             _context.SaveChanges();
         }
     }
-    
+
+    public async Task<string> LoginAsync(LoginDTO dto)
+    {
+        var user = await GetAsync(dto.Email);
+        if (user == null)
+            throw new CustomException(HttpStatusCode.OK, ExceptionMessages.USER_DOESNOT_EXIST);
+
+        if (!SecurityHelper.ValidateHash(dto.Password, user.Password))
+            throw new CustomException(HttpStatusCode.OK, ExceptionMessages.INVALID_CREDENTIALS);
+
+        return JWTHelper.CreateToken(new GetUserDTO
+        {
+            Id = user.Id,
+            Name = user.Name,
+            Email = user.Email,
+            Role = user.Role.ToString()
+        });
+    }
+
+    public async Task<string> GoogleLoginAsync(GoogleLoginDTO dto)
+    {
+        var payload = await GoogleJsonWebSignature.ValidateAsync(dto.IdToken);
+
+        var user = await GetAsync(payload.Email);
+        if (user != null)
+            return JWTHelper.CreateToken(new GetUserDTO
+            {
+                Id = user.Id,
+                Name = user.Name,
+                Email = user.Email,
+                Role = user.Role.ToString()
+            });
+        else
+        {
+            var userId = await AddAsync(new AddUserDTO
+            {
+                Name = payload.Name,
+                Email = payload.Email,
+            });
+
+            return JWTHelper.CreateToken(new GetUserDTO
+            {
+                Id = userId,
+                Name = payload.Name,
+                Email = payload.Email,
+                Role = enRole.User.ToString()
+            });
+        }
+
+    }
+
     public async Task DeleteAsync(int id)
     {
         var user = await GetAsync(id);
@@ -92,9 +149,9 @@ public class UserRepo : IUserRepo
             Id = _.Id,
             Email = _.Email,
             Name = _.Name,
+            Role = _.Role.ToString(),
             IsDeleted = _.IsDeleted,
             IsActive = _.IsActive,
-
         });
 
         return users;
