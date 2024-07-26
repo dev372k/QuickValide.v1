@@ -16,7 +16,7 @@ public class AppController(IAppRepo _appRepo) : ControllerBase
 
     [HttpPost("Update")]
     public async Task<IActionResult> Update(UpdateAddAppDTO request)
-       => Ok(await _appRepo.UpdateAsync(request).ToResponseAsync(message: ResponseMessages.APP_UPDATE));
+       => Ok(await _appRepo.UpdateAsync(request).ToResponseAsync(message: ResponseMessages.APP_UPDATED));
 
     [HttpGet]
     public async Task<IActionResult> Get()

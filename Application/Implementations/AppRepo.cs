@@ -2,6 +2,7 @@
 using Domain;
 using Domain.Entities;
 using Domain.IRepositories;
+using Domain.Repositories.Services;
 using Microsoft.EntityFrameworkCore;
 using Shared.DTOs.AppDTOs;
 using Shared.Exceptions;
@@ -14,10 +15,12 @@ namespace Application.Implementations
     {
         private ApplicationDBContext _context;
         private readonly IMapper _mapper;
-        public AppRepo(ApplicationDBContext context,IMapper mapper) : base(context)
+        private readonly ICloudflareService _cloudflareService;
+        public AppRepo(ApplicationDBContext context,IMapper mapper, ICloudflareService cloudflareService) : base(context)
         {
             _context = context;
             _mapper = mapper;
+            _cloudflareService = cloudflareService;
 
         }
         public Task<List<GetAppNameDTO>> GetNames(int id)
@@ -43,7 +46,7 @@ namespace Application.Implementations
         {
             var app = await GetByIdAsync(id);
             if (app == null)
-                throw new Exception(ExceptionMessages.USER_DOESNOT_EXIST);
+                throw new Exception(ExceptionMessages.APP_DOESNOT_EXIST);
 
             if (app != null)
             {
@@ -55,15 +58,25 @@ namespace Application.Implementations
         {
             App app = _mapper.Map<App>(request);
             var appExist = _context.Apps.Where<App>(_ => _.Domain ==  app.Domain);
+            
             if (appExist != null)
-                throw new CustomException(HttpStatusCode.OK, ExceptionMessages.Domain_ALREADY_EXIST);
+                throw new CustomException(HttpStatusCode.BadRequest, ExceptionMessages.DOMAIN_ALREADY_EXIST);
 
+            bool isDomainConfig = await _cloudflareService.DomainConfig(app.Domain, "wwww.quickvalide.com/" + Guid.NewGuid());
+            if (!isDomainConfig)
+                throw new CustomException(HttpStatusCode.BadRequest, ExceptionMessages.DOMAIN_CONFIGURATION_ISSUE);
             _context.Apps.Add(app);
             _context.SaveChanges();
         }
         public async Task UpdateAsync(UpdateAddAppDTO request)
         {
             App app = _mapper.Map<App>(request);
+            string Domain = _context.Apps.Where<App>(_ => _.Id == app.Id).FirstOrDefault().Domain;
+
+            if (app.Domain != Domain)
+            {
+                bool isDomainConfig = await _cloudflareService.DomainConfig(app.Domain, "wwww.quickvalide.com/" + Guid.NewGuid());
+            }
             _context.Apps.Update(app);
             _context.SaveChanges();
         }
@@ -73,7 +86,6 @@ namespace Application.Implementations
             return _mapper.Map<GetAppDTO>(app);
 
         }
-
         
     }
 }

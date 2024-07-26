@@ -1,5 +1,6 @@
 ﻿using Application.Implementations;
 using Domain;
+using Domain.IRepositories;
 using Domain.Repositories;
 using Domain.Repositories.Services;
 using Infrastructure.Services;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Presentation.Profiler;
 using Shared;
 using Shared.Commons;
 using Swashbuckle.AspNetCore.Filters;
@@ -27,6 +29,7 @@ public static class ConfigureServices
     public static void Repositories(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<IUserRepo, UserRepo>();
+        services.AddScoped<IAppRepo, AppRepo>();
     }
 
     public static void Misc(this IServiceCollection services, IConfiguration configuration)
@@ -89,6 +92,8 @@ public static class ConfigureServices
         services.AddScoped<IFileService, FileService>();
         services.AddScoped<IEmailService, EmailService>();
         services.AddScoped<IGPTService, GPTService>();
+        services.AddScoped<ICloudflareService, CloudflareService>();
+        
     }
 
     public static void Database(this IServiceCollection services, IConfiguration configuration)

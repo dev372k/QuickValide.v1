@@ -43,8 +43,8 @@ public class App : BaseEntity
     public DateTime UpdatedDate { get; set; }
 
     public string AboutUs { get; set; }
+    public string SEO { get; set; }
+    public string Style { get; set; }
 
-    public virtual ICollection<Waitlist> WaitLists { get; set; }
 
-    public virtual User User { get; set; }
 }

@@ -1,5 +1,6 @@
 using API.Middlewares;
 using ApiService;
+using Presentation.Profiler;
 using Serilog;
 using Shared.Commons;
 
@@ -19,6 +20,7 @@ Log.Logger = new LoggerConfiguration()
     .CreateLogger();
 
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 builder.Logging.ClearProviders();
 builder.Logging.AddSerilog();
 var app = builder.Build();
