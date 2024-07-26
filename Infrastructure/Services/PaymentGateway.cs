@@ -60,7 +60,7 @@ public class PaymentGateway : IPaymentGateway
     public async Task<Card> GetCustomerCardAsync(string customerId, string cardId)
     {
         var service = new CardService();
-        Card card = service.Get(customerId, cardId);
+        Card card = await service.GetAsync(customerId, cardId);
         return card;
     }
 
@@ -77,7 +77,7 @@ public class PaymentGateway : IPaymentGateway
     }
 
 
-    public Subscription Create(string customerId, string planId)
+    public async Task<Subscription> Create(string customerId, string planId)
     {
         var options = new SubscriptionCreateOptions
         {
@@ -92,7 +92,7 @@ public class PaymentGateway : IPaymentGateway
         };
 
         var service = new SubscriptionService();
-        var subscription = service.Create(options);
+        var subscription = await service.CreateAsync(options);
         return subscription;
     }
 
