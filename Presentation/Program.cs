@@ -1,6 +1,5 @@
 using API.Middlewares;
 using ApiService;
-using Presentation.Profiler;
 using Serilog;
 using Shared.Commons;
 
@@ -20,7 +19,6 @@ Log.Logger = new LoggerConfiguration()
     .CreateLogger();
 
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 builder.Logging.ClearProviders();
 builder.Logging.AddSerilog();
 var app = builder.Build();
@@ -28,8 +26,8 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
 //{
-    app.UseSwagger();
-    app.UseSwaggerUI();
+app.UseSwagger();
+app.UseSwaggerUI();
 //}
 
 app.UseHttpsRedirection();
