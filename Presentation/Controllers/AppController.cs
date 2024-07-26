@@ -11,11 +11,11 @@ namespace Presentation.Controllers;
 public class AppController(IAppRepo _appRepo) : ControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult> Add(AddAppDTO request)
+    public async Task<IActionResult> Post(AddAppDTO request)
         => Ok(await _appRepo.AddAsync(request).ToResponseAsync(message: ResponseMessages.APP_ADDED));
 
     [HttpPut]
-    public async Task<IActionResult> Update(UpdateAddAppDTO request)
+    public async Task<IActionResult> Put(UpdateAddAppDTO request)
        => Ok(await _appRepo.UpdateAsync(request).ToResponseAsync(message: ResponseMessages.APP_UPDATED));
 
     //[HttpGet]
