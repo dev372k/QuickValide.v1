@@ -29,7 +29,7 @@ var app = builder.Build();
     app.UseSwagger();
     app.UseSwaggerUI();
 //}
-
+app.UseCors(MiscilenousConstants._policy);
 app.UseHttpsRedirection();
 app.UseMiddleware<CustomMiddleware>();
 app.UseAuthorization();
