@@ -1,5 +1,6 @@
 ﻿using Application.Implementations;
 using Domain;
+using Domain.IRepositories;
 using Domain.Repositories;
 using Domain.Repositories.Services;
 using Infrastructure.Services;
@@ -27,6 +28,7 @@ public static class ConfigureServices
     public static void Repositories(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<IUserRepo, UserRepo>();
+        services.AddScoped<IAppRepo, AppRepo>();
     }
 
     public static void Misc(this IServiceCollection services, IConfiguration configuration)

@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Omu.ValueInjecter;
 using Shared.DTOs.AppDTOs;
 using Shared.Exceptions;
+using Shared.Extensions;
 using Shared.Exceptions.Messages;
 using System.Net;
 
@@ -52,9 +53,12 @@ public class AppRepo : IAppRepo
     public async Task AddAsync(AddAppDTO request)
     {
         App app = Mapper.Map<App>(request);
-        var appExist = _context.Apps.Where<App>(_ => _.Domain == app.Domain);
+        request.SEO.Title = request.Name;
+        app.SEO = request.SEO.ToJson().ToString();
+        app.Style = request.Style.ToJson().ToString();
+        var appExist = _context.Apps.Any(_ => _.Domain == app.Domain);
 
-        if (appExist != null)
+        if (appExist)
             throw new CustomException(HttpStatusCode.BadRequest, ExceptionMessages.DOMAIN_ALREADY_EXIST);
 
         bool isDomainConfig = await _cloudflareService.DomainConfig(app.Domain, "www.quickvalide.com/" + Guid.NewGuid());

@@ -10,6 +10,7 @@ using Shared.Exceptions.Messages;
 using Shared.Commons;
 using Google.Apis.Auth;
 using Domain.Repositories.Services;
+using Domain.IRepositories;
 
 namespace Application.Implementations;
 
@@ -17,11 +18,13 @@ public class UserRepo : IUserRepo
 {
     private ApplicationDBContext _context;
     private IEmailService _emailService;
+    private IAppRepo _iAppRepo;
 
-    public UserRepo(ApplicationDBContext context, IEmailService emailService)
+    public UserRepo(ApplicationDBContext context, IEmailService emailService, IAppRepo iAppRepo)
     {
         _context = context;
         _emailService = emailService;
+        _iAppRepo = iAppRepo;
     }
 
     public async Task<int> AddAsync(AddUserDTO dto)
@@ -41,6 +44,8 @@ public class UserRepo : IUserRepo
 
         _context.Users.Add(user);
         _context.SaveChanges();
+
+        await _iAppRepo.AddAsync(new Shared.DTOs.AppDTOs.AddAppDTO() {Name =dto.Name,Email = dto.Email });
 
         return user.Id;
     }

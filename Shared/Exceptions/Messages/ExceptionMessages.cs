@@ -12,6 +12,10 @@ namespace Shared.Exceptions.Messages
         public const string APP_DOESNOT_EXIST = "App does not exist.";
         public const string RECORD_NOT_FOUND = "Record not found";
         public const string FAILED = "Failed";
+        public const string Email_ALREADY_EXIST = "Email already exists.";
+        public const string SUBSCRIPTION_DOESNOT_EXIST = "Subscription does not exist.";
+        public const string SUBSCRIPTION_ALREADY_EXIST = "Subscription already exists.";
+
 
         public const string BLOG_DOESNOT_EXIST = "Blog does not exist.";
 
