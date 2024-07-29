@@ -22,9 +22,9 @@ public class AppRepo : IAppRepo
         _cloudflareService = cloudflareService;
     }
 
-    public Task<List<GetAppNameDTO>> GetNames(int id)
+    public async Task<List<GetAppNameDTO>> GetNames(int id)
     {
-        var apps = _context.Apps
+        var apps = await _context.Apps
         .Where(app => app.Id == id)
         .Select(app => new GetAppNameDTO
         {
@@ -52,7 +52,7 @@ public class AppRepo : IAppRepo
     public async Task AddAsync(AddAppDTO request)
     {
         App app = Mapper.Map<App>(request);
-        var appExist = _context.Apps.Where<App>(_ => _.Domain == app.Domain);
+        var appExist = await _context.Apps.FirstOrDefaultAsync(_ => _.Domain == app.Domain);
 
         if (appExist != null)
             throw new CustomException(HttpStatusCode.BadRequest, ExceptionMessages.DOMAIN_ALREADY_EXIST);
@@ -64,15 +64,17 @@ public class AppRepo : IAppRepo
         _context.Apps.Add(app);
         _context.SaveChanges();
     }
+
     public async Task UpdateAsync(UpdateAddAppDTO request)
     {
         App app = Mapper.Map<App>(request);
-        string Domain = _context.Apps.Where(_ => _.Id == app.Id).FirstOrDefault().Domain;
+        string? Domain = _context.Apps.Where(_ => _.Id == app.Id).FirstOrDefault().Domain;
 
         if (app.Domain != Domain)
         {
             bool isDomainConfig = await _cloudflareService.DomainConfig(app.Domain, "www.quickvalide.com/" + Guid.NewGuid());
         }
+
         _context.Apps.Update(app);
         _context.SaveChanges();
     }
@@ -81,5 +83,22 @@ public class AppRepo : IAppRepo
     {
         var app = await _context.Apps.Where(_ => _.Id == id).FirstOrDefaultAsync() ?? throw new CustomException(HttpStatusCode.OK, ExceptionMessages.APP_DOESNOT_EXIST);
         return Mapper.Map<GetAppDTO>(app);
+    }
+
+    public async Task UpdateGoogleURLAsync(int id, string url)
+    {
+        var app = await _context.Apps.Where(_ => _.Id == id).FirstOrDefaultAsync()
+            ?? throw new CustomException(HttpStatusCode.OK, ExceptionMessages.APP_DOESNOT_EXIST);
+
+        app.GoogleURL = url;
+        _context.SaveChanges();
+    }
+
+    public async Task<string> GetGoogleURLAsync(int id)
+    {
+        var app = await _context.Apps.Where(_ => _.Id == id).FirstOrDefaultAsync()
+            ?? throw new CustomException(HttpStatusCode.OK, ExceptionMessages.APP_DOESNOT_EXIST);
+
+        return app.GoogleURL
     }
 }
