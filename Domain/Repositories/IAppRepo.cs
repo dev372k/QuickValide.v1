@@ -10,5 +10,7 @@ namespace Domain.IRepositories
         Task DeleteAsync(int id);
         Task AddAsync(AddAppDTO request);
         Task UpdateAsync(UpdateAddAppDTO request);
+        Task GetGoogleURLAsync(int id);
+        Task UpdateGoogleURLAsync(int id, string url);
     }
 }
