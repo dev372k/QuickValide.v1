@@ -4,6 +4,5 @@
     {
         public string Name { get; set; }
         public string Domain { get; set; }
-        public bool IsLive { get; set; }
     }
 }
