@@ -1,7 +1,4 @@
-﻿using Domain.Entities;
-using Domain.IRepositories;
-using Domain.Repositories;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Commons;
 using Shared.DTOs.UserSubscriptionDTOs;
@@ -11,7 +8,7 @@ namespace Presentation.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class UserSubscriptionController(IUserSubscriptionRepo _userSubscriptionRepo) : ControllerBase
+public class UserSubscriptionController(UserSubscriptionRepo _userSubscriptionRepo) : ControllerBase
 {
     [HttpPost, Authorize]
     public async Task<IActionResult> Post(AddUserSubscriptionDTO request)

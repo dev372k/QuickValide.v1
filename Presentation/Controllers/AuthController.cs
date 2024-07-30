@@ -1,4 +1,5 @@
-﻿using Domain.Repositories;
+﻿using Application.Implementations;
+using Domain.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Commons;
@@ -9,7 +10,7 @@ namespace API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class AuthController(IUserRepo _userRepo) : ControllerBase
+public class AuthController(UserRepo _userRepo) : ControllerBase
 {
     [HttpPost]
     public async Task<IActionResult> Post(AddUserDTO request)

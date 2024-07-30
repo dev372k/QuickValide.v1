@@ -1,7 +1,6 @@
 ﻿using Domain;
 using Shared.DTOs.UserDTOs;
 using Shared.Helpers;
-using Domain.Repositories;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Shared.Exceptions;
@@ -10,17 +9,16 @@ using Shared.Exceptions.Messages;
 using Shared.Commons;
 using Google.Apis.Auth;
 using Domain.Repositories.Services;
-using Domain.IRepositories;
 
 namespace Application.Implementations;
 
-public class UserRepo : IUserRepo
+public class UserRepo
 {
-    private ApplicationDBContext _context;
+    private IApplicationDBContext _context;
     private IEmailService _emailService;
-    private IAppRepo _appRepo;
+    private AppRepo _appRepo;
 
-    public UserRepo(ApplicationDBContext context, IEmailService emailService, IAppRepo appRepo)
+    public UserRepo(IApplicationDBContext context, IEmailService emailService, AppRepo appRepo)
     {
         _context = context;
         _emailService = emailService;
@@ -29,7 +27,7 @@ public class UserRepo : IUserRepo
 
     public async Task<int> AddAsync(AddUserDTO dto)
     {
-        var userExist = await _context.Users.FirstOrDefaultAsync(_ => _.Email == dto.Email);
+        var userExist = await _context.Set<User>().FirstOrDefaultAsync(_ => _.Email == dto.Email);
         if (userExist != null)
             throw new CustomException(HttpStatusCode.OK, ExceptionMessages.USER_ALREADY_EXIST);
 
@@ -42,8 +40,8 @@ public class UserRepo : IUserRepo
             CreatedAt = DateTime.Now,
         };
 
-        _context.Users.Add(user);
-        _context.SaveChanges();
+        _context.Set<User>().Add(user);
+        await _context.SaveChangesAsync();
 
         string guid = Guid.NewGuid().ToString().Replace("-", "");
         string sampleAppName = $"Sample App {guid}";
@@ -56,7 +54,7 @@ public class UserRepo : IUserRepo
 
     public async Task<GetUserDTO> GetAsync(string email)
     {
-        return await _context.Users.Where(_ => _.Email.ToLower().Equals(email.ToLower())).Select(_ => new GetUserDTO
+        return await _context.Set<User>().Where(_ => _.Email.ToLower().Equals(email.ToLower())).Select(_ => new GetUserDTO
         {
             Id = _.Id,
             Email = _.Email,
@@ -68,7 +66,7 @@ public class UserRepo : IUserRepo
 
     public async Task<GetUserDTO> GetAsync(int id)
     {
-        return await _context.Users.Where(_ => _.Id == id).Select(_ => new GetUserDTO
+        return await _context.Set<User>().Where(_ => _.Id == id).Select(_ => new GetUserDTO
         {
             Id = _.Id,
             Email = _.Email,
@@ -80,12 +78,12 @@ public class UserRepo : IUserRepo
 
     public async Task UpdateAsync(int id, UpdateUserDTO dto)
     {
-        var user = await _context.Users.FirstOrDefaultAsync(_ => _.Id == id);
+        var user = await _context.Set<User>().FirstOrDefaultAsync(_ => _.Id == id);
         if (user == null)
             throw new CustomException(HttpStatusCode.OK, ExceptionMessages.USER_DOESNOT_EXIST);
 
         user.Name = dto.Name;
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
 
     }
 
@@ -110,7 +108,7 @@ public class UserRepo : IUserRepo
     {
         var payload = await GoogleJsonWebSignature.ValidateAsync(dto.IdToken);
 
-        var user = await _context.Users.FirstOrDefaultAsync(_ => _.Email == payload.Email);
+        var user = await _context.Set<User>().FirstOrDefaultAsync(_ => _.Email == payload.Email);
         if (user != null)
             return JWTHelper.CreateToken(new GetUserDTO
             {
@@ -143,13 +141,13 @@ public class UserRepo : IUserRepo
         if (user != null)
         {
             user.IsDeleted = true;
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
     }
 
     public async Task<IQueryable<GetUserDTO>> GetAsync()
     {
-        var users = _context.Users.Select(_ => new GetUserDTO
+        var users = _context.Set<User>().Select(_ => new GetUserDTO
         {
             Id = _.Id,
             Email = _.Email,
@@ -164,18 +162,18 @@ public class UserRepo : IUserRepo
 
     public async Task UpdateStatusAsync(int id, bool status)
     {
-        var user = await _context.Users.FirstOrDefaultAsync(_ => _.Id == id);
+        var user = await _context.Set<User>().FirstOrDefaultAsync(_ => _.Id == id);
         if (user == null)
             throw new CustomException(HttpStatusCode.OK, ExceptionMessages.USER_DOESNOT_EXIST);
 
         user.IsDeleted = status;
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
 
     }
 
     public async Task UpdatePasswordAsync(string email)
     {
-        var user = await _context.Users.FirstOrDefaultAsync(_ => _.Email == email);
+        var user = await _context.Set<User>().FirstOrDefaultAsync(_ => _.Email == email);
         if (user == null)
             throw new CustomException(HttpStatusCode.OK, ExceptionMessages.USER_DOESNOT_EXIST);
 

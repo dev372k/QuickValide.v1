@@ -1,5 +1,4 @@
-﻿using Domain.Entities;
-using Domain.IRepositories;
+﻿using Application.Implementations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Commons;
@@ -10,7 +9,7 @@ namespace Presentation.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class AppController(IAppRepo _appRepo) : ControllerBase
+public class AppController(AppRepo _appRepo) : ControllerBase
 {
     [HttpPost, Authorize]
     [IsAuthorized(["Admin", "User"])]

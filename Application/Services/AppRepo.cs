@@ -13,14 +13,14 @@ using Newtonsoft.Json;
 
 namespace Application.Implementations;
 
-public class AppRepo : IAppRepo
+public class AppRepo
 {
-    private readonly ApplicationDBContext _context;
+    private readonly IApplicationDBContext _context;
 
     private readonly ICloudflareService _cloudflareService;
     private readonly IStateHelper _stateHelper;
 
-    public AppRepo(ApplicationDBContext context, ICloudflareService cloudflareService, IStateHelper stateHelper)
+    public AppRepo(IApplicationDBContext context, ICloudflareService cloudflareService, IStateHelper stateHelper)
     {
         _context = context;
         _cloudflareService = cloudflareService;
@@ -29,7 +29,7 @@ public class AppRepo : IAppRepo
 
     public async Task<List<GetAppNameDTO>> GetAsync()
     {
-        var apps = await _context.Apps
+        var apps = await _context.Set<App>()
         .Where(app => app.UserId == _stateHelper.User().Id)
         .Select(app => new GetAppNameDTO
         {
@@ -46,13 +46,13 @@ public class AppRepo : IAppRepo
     }
     public async Task DeleteAsync(int id)
     {
-        var app = await _context.Apps.FirstOrDefaultAsync(_ => _.Id == id);
+        var app = await _context.Set<App>().FirstOrDefaultAsync(_ => _.Id == id);
         if (app == null)
             throw new Exception(ExceptionMessages.APP_DOESNOT_EXIST);
 
         await _cloudflareService.DeleteDomain(app.RecordId);
         app.IsDeleted = true;
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
     }
 
     public async Task AddAsync(AddAppDTO request)
@@ -61,47 +61,47 @@ public class AppRepo : IAppRepo
         request.SEO.Title = request.Name;
         app.SEO = JsonConvert.SerializeObject(request.SEO);
         app.Style = JsonConvert.SerializeObject(request.Style);
-        var appExist = _context.Apps.Any(_ => _.Domain == app.Domain);
+        var appExist = _context.Set<App>().Any(_ => _.Domain == app.Domain);
 
         if (appExist)
             throw new CustomException(HttpStatusCode.BadRequest, ExceptionMessages.DOMAIN_ALREADY_EXIST);
 
         var recordId = await _cloudflareService.AddDomain(app.Domain);
         app.RecordId = recordId;
-        _context.Apps.Add(app);
-        _context.SaveChanges();
+        _context.Set<App>().Add(app);
+        await _context.SaveChangesAsync();
     }
 
     public async Task UpdateAsync(UpdateAddAppDTO request)
     {
         App app = Mapper.Map<App>(request);
-        string? Domain = _context.Apps.Where(_ => _.Id == app.Id).FirstOrDefault().Domain;
+        string? Domain = _context.Set<App>().Where(_ => _.Id == app.Id).FirstOrDefault().Domain;
 
         if (app.Domain != Domain)
             await _cloudflareService.UpdateDomain(app.RecordId, app.Domain);
 
-        _context.Apps.Update(app);
-        _context.SaveChanges();
+        _context.Set<App>().Update(app);
+        await _context.SaveChangesAsync();
     }
     
     public async Task<GetAppDTO> GetAsync(int id)
     {
-        var app = await _context.Apps.Where(_ => _.Id == id).FirstOrDefaultAsync() ?? throw new CustomException(HttpStatusCode.OK, ExceptionMessages.APP_DOESNOT_EXIST);
+        var app = await _context.Set<App>().Where(_ => _.Id == id).FirstOrDefaultAsync() ?? throw new CustomException(HttpStatusCode.OK, ExceptionMessages.APP_DOESNOT_EXIST);
         return Mapper.Map<GetAppDTO>(app);
     }
 
     public async Task UpdateGoogleURLAsync(int id, string url)
     {
-        var app = await _context.Apps.Where(_ => _.Id == id).FirstOrDefaultAsync()
+        var app = await _context.Set<App>().Where(_ => _.Id == id).FirstOrDefaultAsync()
             ?? throw new CustomException(HttpStatusCode.OK, ExceptionMessages.APP_DOESNOT_EXIST);
 
         app.GoogleURL = url;
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
     }
 
     public async Task<string> GetGoogleURLAsync(int id)
     {
-        var app = await _context.Apps.Where(_ => _.Id == id).FirstOrDefaultAsync()
+        var app = await _context.Set<App>().Where(_ => _.Id == id).FirstOrDefaultAsync()
             ?? throw new CustomException(HttpStatusCode.OK, ExceptionMessages.APP_DOESNOT_EXIST);
 
         return app.GoogleURL;

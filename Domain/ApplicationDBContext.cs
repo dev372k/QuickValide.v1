@@ -1,13 +1,10 @@
 ﻿using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using System.Data;
-using System.Security;
 
 namespace Domain;
 
-public class ApplicationDBContext : DbContext
+public class ApplicationDBContext : DbContext, IApplicationDBContext
 {
-    public ApplicationDBContext() { }
     public ApplicationDBContext(DbContextOptions<ApplicationDBContext> options) : base(options) { }
 
     public DbSet<App> Apps { get; set; }
@@ -16,6 +13,15 @@ public class ApplicationDBContext : DbContext
     public DbSet<UserSubscription> UserSubscriptions { get; set; }
 
 
+    public DbSet<TEntity> Set<TEntity>() where TEntity : class
+    {
+        return base.Set<TEntity>();
+    }
+
+    public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        return await base.SaveChangesAsync(cancellationToken);
+    }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<User>().HasQueryFilter(_ => !_.IsDeleted);

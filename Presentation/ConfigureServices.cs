@@ -27,10 +27,10 @@ public static class ConfigureServices
 
     public static void Repositories(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddScoped<IUserRepo, UserRepo>();
-        services.AddScoped<IAppRepo, AppRepo>();
-        services.AddScoped<IWaitlistRepo, WaitlistRepo>();
-        services.AddScoped<IUserSubscriptionRepo, UserSubscriptionRepo>();
+        services.AddScoped<UserRepo>();
+        services.AddScoped<AppRepo>();
+        services.AddScoped<WaitlistRepo>();
+        services.AddScoped<UserSubscriptionRepo>();
     }
 
     public static void Misc(this IServiceCollection services, IConfiguration configuration)
@@ -99,6 +99,6 @@ public static class ConfigureServices
 
     public static void Database(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDbContextPool<ApplicationDBContext>(opt => opt.UseSqlServer(configuration.GetConnectionString("cs")));
+        services.AddDbContextPool<IApplicationDBContext, ApplicationDBContext>(opt => opt.UseSqlServer(configuration.GetConnectionString("cs")));
     }
 }
