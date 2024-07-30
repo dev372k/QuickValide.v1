@@ -1,7 +1,5 @@
 ﻿using Application.Implementations;
 using Domain;
-using Domain.IRepositories;
-using Domain.Repositories;
 using Domain.Repositories.Services;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;

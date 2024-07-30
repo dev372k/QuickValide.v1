@@ -1,6 +1,5 @@
 ﻿using Domain;
 using Domain.Entities;
-using Domain.IRepositories;
 using Domain.Repositories.Services;
 using Microsoft.EntityFrameworkCore;
 using Omu.ValueInjecter;
@@ -16,7 +15,6 @@ namespace Application.Implementations;
 public class AppRepo
 {
     private readonly IApplicationDBContext _context;
-
     private readonly ICloudflareService _cloudflareService;
     private readonly IStateHelper _stateHelper;
 
