@@ -40,22 +40,24 @@ namespace Domain.Migrations
                     UserId = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    GoogleURL = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PageContent = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Videolink = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Pricing = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    GoogleURL = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PageContent = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Videolink = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Pricing = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ThemeId = table.Column<int>(type: "int", nullable: false),
-                    Domain = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Svglink = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    PlaystoreLink = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AppstoreLink = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Domain = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Svglink = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PlaystoreLink = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AppstoreLink = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    AboutUs = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AboutUs = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SEO = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Style = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -69,7 +71,7 @@ namespace Domain.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserSubscription",
+                name: "UserSubscriptions",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -86,9 +88,9 @@ namespace Domain.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserSubscription", x => x.Id);
+                    table.PrimaryKey("PK_UserSubscriptions", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_UserSubscription_Users_UserId",
+                        name: "FK_UserSubscriptions_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
@@ -96,7 +98,7 @@ namespace Domain.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Waitlist",
+                name: "Waitlists",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -112,14 +114,19 @@ namespace Domain.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Waitlist", x => x.Id);
+                    table.PrimaryKey("PK_Waitlists", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Waitlist_Apps_AppId",
+                        name: "FK_Waitlists_Apps_AppId",
                         column: x => x.AppId,
                         principalTable: "Apps",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "Id", "CreatedAt", "Email", "IsActive", "IsDeleted", "Name", "Password", "Role", "UpdatedAt" },
+                values: new object[] { 1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "sa@mailinator.com", true, false, "Super Admin", "$2a$11$LF.jO5445FGwpoGW9PGgR.TKNymOmleYKS2vPhTcpqanjMM9stbIC", 0, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Apps_UserId",
@@ -127,13 +134,13 @@ namespace Domain.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserSubscription_UserId",
-                table: "UserSubscription",
+                name: "IX_UserSubscriptions_UserId",
+                table: "UserSubscriptions",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Waitlist_AppId",
-                table: "Waitlist",
+                name: "IX_Waitlists_AppId",
+                table: "Waitlists",
                 column: "AppId");
         }
 
@@ -141,10 +148,10 @@ namespace Domain.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "UserSubscription");
+                name: "UserSubscriptions");
 
             migrationBuilder.DropTable(
-                name: "Waitlist");
+                name: "Waitlists");
 
             migrationBuilder.DropTable(
                 name: "Apps");

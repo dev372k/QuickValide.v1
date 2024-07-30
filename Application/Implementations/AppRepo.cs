@@ -6,9 +6,10 @@ using Microsoft.EntityFrameworkCore;
 using Omu.ValueInjecter;
 using Shared.DTOs.AppDTOs;
 using Shared.Exceptions;
-using Shared.Extensions;
 using Shared.Exceptions.Messages;
 using System.Net;
+using Shared;
+using Newtonsoft.Json;
 
 namespace Application.Implementations;
 
@@ -17,16 +18,19 @@ public class AppRepo : IAppRepo
     private readonly ApplicationDBContext _context;
 
     private readonly ICloudflareService _cloudflareService;
-    public AppRepo(ApplicationDBContext context, ICloudflareService cloudflareService)
+    private readonly IStateHelper _stateHelper;
+
+    public AppRepo(ApplicationDBContext context, ICloudflareService cloudflareService, IStateHelper stateHelper)
     {
         _context = context;
         _cloudflareService = cloudflareService;
+        _stateHelper = stateHelper;
     }
 
-    public async Task<List<GetAppNameDTO>> GetNames(int id)
+    public async Task<List<GetAppNameDTO>> GetAsync()
     {
         var apps = await _context.Apps
-        .Where(app => app.Id == id)
+        .Where(app => app.UserId == _stateHelper.User().Id)
         .Select(app => new GetAppNameDTO
         {
             Id = app.Id,
@@ -54,16 +58,14 @@ public class AppRepo : IAppRepo
     {
         App app = Mapper.Map<App>(request);
         request.SEO.Title = request.Name;
-        app.SEO = request.SEO.ToJson().ToString();
-        app.Style = request.Style.ToJson().ToString();
+        app.SEO = JsonConvert.SerializeObject(request.SEO);
+        app.Style = JsonConvert.SerializeObject(request.Style);
         var appExist = _context.Apps.Any(_ => _.Domain == app.Domain);
 
         if (appExist)
             throw new CustomException(HttpStatusCode.BadRequest, ExceptionMessages.DOMAIN_ALREADY_EXIST);
 
-        bool isDomainConfig = await _cloudflareService.DomainConfig(app.Domain, "www.quickvalide.com/" + Guid.NewGuid());
-        if (!isDomainConfig)
-            throw new CustomException(HttpStatusCode.BadRequest, ExceptionMessages.DOMAIN_CONFIGURATION_ISSUE);
+        await _cloudflareService.DomainConfig(app.Domain);
 
         _context.Apps.Add(app);
         _context.SaveChanges();
@@ -75,9 +77,7 @@ public class AppRepo : IAppRepo
         string? Domain = _context.Apps.Where(_ => _.Id == app.Id).FirstOrDefault().Domain;
 
         if (app.Domain != Domain)
-        {
-            bool isDomainConfig = await _cloudflareService.DomainConfig(app.Domain, "www.quickvalide.com/" + Guid.NewGuid());
-        }
+            await _cloudflareService.DomainConfig(app.Domain);
 
         _context.Apps.Update(app);
         _context.SaveChanges();
@@ -103,6 +103,7 @@ public class AppRepo : IAppRepo
         var app = await _context.Apps.Where(_ => _.Id == id).FirstOrDefaultAsync()
             ?? throw new CustomException(HttpStatusCode.OK, ExceptionMessages.APP_DOESNOT_EXIST);
 
-        return app.GoogleURL
+        return app.GoogleURL;
     }
+
 }

@@ -12,6 +12,7 @@ namespace Shared.DTOs.AppDTOs
             SEO = new SEO();
             Style = new Style();
         }
+        public int UserId { get; set; }
         public string Name { get; set; } = String.Empty;
         public string Email { get; set; } = String.Empty;
         public string PageContent { get; set; } = TemplatesConstants.PAGECONTENT;

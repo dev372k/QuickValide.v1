@@ -1,4 +1,5 @@
-﻿using Domain.IRepositories;
+﻿using Domain.Entities;
+using Domain.IRepositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Commons;
@@ -21,9 +22,10 @@ public class AppController(IAppRepo _appRepo) : ControllerBase
     public async Task<IActionResult> Put(UpdateAddAppDTO request)
        => Ok(await _appRepo.UpdateAsync(request).ToResponseAsync(message: ResponseMessages.APP_UPDATED));
 
-    //[HttpGet]
-    //public async Task<IActionResult> Get()
-    //    => Ok(await _appRepo.GetAllAsync().ToResponseAsync());
+    [HttpGet, Authorize]
+    [IsAuthorized(["Admin", "User"])]
+    public async Task<IActionResult> Get()
+        => Ok(await _appRepo.GetAsync().ToResponseAsync());
 
     [HttpGet("{id}"), Authorize]
     [IsAuthorized(["Admin", "User"])]
