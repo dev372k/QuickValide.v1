@@ -47,21 +47,23 @@ public class UserRepo
         string sampleAppName = $"Sample App {guid}";
         string sampleAppDomain = $"sample-app-{guid}".ToLower();
 
-        await _appRepo.AddAsync(new Shared.DTOs.AppDTOs.AddAppDTO() {UserId = user.Id, Name = sampleAppName, Email = dto.Email, Domain = sampleAppDomain });
+        await _appRepo.AddAsync(new Shared.DTOs.AppDTOs.AddAppDTO() { UserId = user.Id, Name = sampleAppName, Email = dto.Email, Domain = sampleAppDomain });
 
         return user.Id;
     }
 
     public async Task<GetUserDTO> GetAsync(string email)
     {
-        return await _context.Set<User>().Where(_ => _.Email.ToLower().Equals(email.ToLower())).Select(_ => new GetUserDTO
-        {
-            Id = _.Id,
-            Email = _.Email,
-            Name = _.Name,
-            Role = _.Role.ToString(),
-            Password = _.Password,
-        }).FirstOrDefaultAsync() ?? throw new CustomException(HttpStatusCode.OK, ExceptionMessages.USER_DOESNOT_EXIST);
+        return await _context.Set<User>()
+            .Where(_ => _.Email.ToLower().Equals(email.ToLower()))
+            .Select(_ => new GetUserDTO
+            {
+                Id = _.Id,
+                Email = _.Email,
+                Name = _.Name,
+                Role = _.Role.ToString(),
+                Password = _.Password,
+            }).FirstOrDefaultAsync() ?? throw new CustomException(HttpStatusCode.OK, ExceptionMessages.USER_DOESNOT_EXIST);
     }
 
     public async Task<GetUserDTO> GetAsync(int id)
@@ -181,6 +183,5 @@ public class UserRepo
         user.Password = SecurityHelper.GenerateHash(newPassword);
         await _context.SaveChangesAsync();
         await _emailService.SendEmailAsync(email, EmailTemplate.NEW_PASSWORD_SUBJECT, string.Format(EmailTemplate.NEW_PASSWORD_BODY, newPassword));
-
     }
 }

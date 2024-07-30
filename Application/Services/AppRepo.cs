@@ -73,7 +73,9 @@ public class AppRepo
     public async Task UpdateAsync(UpdateAddAppDTO request)
     {
         App app = Mapper.Map<App>(request);
-        string? Domain = _context.Set<App>().Where(_ => _.Id == app.Id).FirstOrDefault().Domain;
+        string? Domain = _context.Set<App>()
+            .Where(_ => _.Id == app.Id)
+            .FirstOrDefault().Domain;
 
         if (app.Domain != Domain)
             await _cloudflareService.UpdateDomain(app.RecordId, app.Domain);
