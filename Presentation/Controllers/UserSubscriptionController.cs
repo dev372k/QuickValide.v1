@@ -26,8 +26,8 @@ public class UserSubscriptionController(IUserSubscriptionRepo _userSubscriptionR
       => Ok(await _userSubscriptionRepo.UpdateStatusAsync(id, status).ToResponseAsync(message: ResponseMessages.SUBSCRIPTION_UPDATED));
 
     [HttpGet("{userid}"), Authorize]
-    public async Task<IActionResult> Get(int userid)
-        => Ok(await _userSubscriptionRepo.GetAsync(userid).ToResponseAsync());
+    public async Task<IActionResult> Get()
+        => Ok(await _userSubscriptionRepo.GetAsync().ToResponseAsync());
 
     [HttpDelete("{id}"), Authorize]
     public async Task<IActionResult> Delete(int id)

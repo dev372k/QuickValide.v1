@@ -3,6 +3,7 @@ using Domain.Entities;
 using Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Omu.ValueInjecter;
+using Shared;
 using Shared.DTOs.UserSubscriptionDTOs;
 using Shared.Exceptions;
 using Shared.Exceptions.Messages;
@@ -13,8 +14,10 @@ namespace Application.Implementations
     public class UserSubscriptionRepo : IUserSubscriptionRepo
     {
         private ApplicationDBContext _context;
-        public UserSubscriptionRepo(ApplicationDBContext context) {
+        private IStateHelper _stateHelper;
+        public UserSubscriptionRepo(ApplicationDBContext context, IStateHelper stateHelper) {
             _context = context;
+            _stateHelper = stateHelper;
         }
         public async Task AddAsync(AddUserSubscriptionDTO dto)
         {
@@ -48,9 +51,10 @@ namespace Application.Implementations
             _context.SaveChanges();
         }
 
-        public async Task<GetUserSubscriptionDTO> GetAsync(int Userid)
+        public async Task<GetUserSubscriptionDTO> GetAsync()
         {
-            var userSubscription = await _context.UserSubscriptions.Where(_ => _.UserId == Userid).FirstOrDefaultAsync() ?? throw new CustomException(HttpStatusCode.OK, ExceptionMessages.SUBSCRIPTION_DOESNOT_EXIST);
+            var userSubscription = await _context.UserSubscriptions.Where(_ => _.UserId == _stateHelper.User().Id
+            ).FirstOrDefaultAsync() ?? throw new CustomException(HttpStatusCode.OK, ExceptionMessages.SUBSCRIPTION_DOESNOT_EXIST);
             return Mapper.Map<GetUserSubscriptionDTO>(userSubscription);
         }
 
