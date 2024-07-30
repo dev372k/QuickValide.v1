@@ -2,13 +2,9 @@
 
 namespace Shared.DTOs.AppDTOs
 {
-    public class UpdateAddAppDTO : AddAppDTO
-    { 
-        public string Id { get; set; } = String.Empty;
-    }
-    public class AddAppDTO
+    public class UpsertAppDTO
     {
-        public AddAppDTO(){
+        public UpsertAppDTO(){
             SEO = new SEO();
             Style = new Style();
         }

@@ -13,13 +13,13 @@ public class AppController(AppRepo _appRepo) : ControllerBase
 {
     [HttpPost, Authorize]
     [IsAuthorized(["Admin", "User"])]
-    public async Task<IActionResult> Post(AddAppDTO request)
+    public async Task<IActionResult> Post(UpsertAppDTO request)
         => Ok(await _appRepo.AddAsync(request).ToResponseAsync(message: ResponseMessages.APP_ADDED));
 
-    [HttpPut, Authorize]
+    [HttpPut("{id:int}"), Authorize]
     [IsAuthorized(["Admin", "User"])]
-    public async Task<IActionResult> Put(UpdateAddAppDTO request)
-       => Ok(await _appRepo.UpdateAsync(request).ToResponseAsync(message: ResponseMessages.APP_UPDATED));
+    public async Task<IActionResult> Put(int id, UpsertAppDTO request)
+       => Ok(await _appRepo.UpdateAsync(id, request).ToResponseAsync(message: ResponseMessages.APP_UPDATED));
 
     [HttpGet, Authorize]
     [IsAuthorized(["Admin", "User"])]
@@ -34,5 +34,5 @@ public class AppController(AppRepo _appRepo) : ControllerBase
     [HttpDelete("{id}"), Authorize]
     [IsAuthorized(["Admin", "User"])]
     public async Task<IActionResult> Delete(int id)
-        => Ok(await _appRepo.DeleteAsync(id).ToResponseAsync(message: ResponseMessages.USER_DELETED));
+        => Ok(await _appRepo.DeleteAsync(id).ToResponseAsync(message: ResponseMessages.APP_UPDATED));
 }

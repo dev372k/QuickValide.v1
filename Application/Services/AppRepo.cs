@@ -53,7 +53,7 @@ public class AppRepo
         await _context.SaveChangesAsync();
     }
 
-    public async Task AddAsync(AddAppDTO request)
+    public async Task AddAsync(UpsertAppDTO request)
     {
         App app = Mapper.Map<App>(request);
         request.SEO.Title = request.Name;
@@ -70,16 +70,18 @@ public class AppRepo
         await _context.SaveChangesAsync();
     }
 
-    public async Task UpdateAsync(UpdateAddAppDTO request)
+    public async Task UpdateAsync(int id, UpsertAppDTO request)
     {
-        App app = Mapper.Map<App>(request);
-        string? Domain = _context.Set<App>()
-            .Where(_ => _.Id == app.Id)
-            .FirstOrDefault().Domain;
+        var app = _context.Set<App>()
+            .Where(_ => _.Id == id)
+            .FirstOrDefault();
 
-        if (app.Domain != Domain)
-            await _cloudflareService.UpdateDomain(app.RecordId, app.Domain);
+        if (app == null)
+            throw new Exception(ExceptionMessages.APP_DOESNOT_EXIST);
+        else if (app.Domain != request.Domain)
+            await _cloudflareService.UpdateDomain(app.RecordId!, app.Domain!);
 
+        app = Mapper.Map<App>(request);
         _context.Set<App>().Update(app);
         await _context.SaveChangesAsync();
     }

@@ -47,7 +47,7 @@ public class UserRepo
         string sampleAppName = $"Sample App {guid}";
         string sampleAppDomain = $"sample-app-{guid}".ToLower();
 
-        await _appRepo.AddAsync(new Shared.DTOs.AppDTOs.AddAppDTO() { UserId = user.Id, Name = sampleAppName, Email = dto.Email, Domain = sampleAppDomain });
+        await _appRepo.AddAsync(new Shared.DTOs.AppDTOs.UpsertAppDTO() { UserId = user.Id, Name = sampleAppName, Email = dto.Email, Domain = sampleAppDomain });
 
         return user.Id;
     }

@@ -67,22 +67,22 @@ public static class ConfigureServices
             options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
             options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
         })
-            .AddGoogle(googleOptions =>
+        .AddGoogle(options =>
+        {
+            options.ClientId = configuration.GetSection("GoogleAuth:ClientId").Value!;
+            options.ClientSecret = configuration.GetSection("GoogleAuth:ClientSecret").Value!;
+        })
+        .AddJwtBearer(options =>
+        {
+            options.TokenValidationParameters = new TokenValidationParameters
             {
-                googleOptions.ClientId = configuration.GetSection("GoogleAuth:ClientId").Value!;
-                googleOptions.ClientSecret = configuration.GetSection("GoogleAuth:ClientSecret").Value!;
-            })
-            .AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    ValidateAudience = false,
-                    ValidateIssuer = false,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
-                            configuration.GetSection("SecretKeys:JWT").Value!))
-                };
-            });
+                ValidateIssuerSigningKey = true,
+                ValidateAudience = false,
+                ValidateIssuer = false,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+                        configuration.GetSection("SecretKeys:JWT").Value!))
+            };
+        });
     }
 
     public static void Services(this IServiceCollection services, IConfiguration configuration)
