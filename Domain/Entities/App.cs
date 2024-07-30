@@ -16,35 +16,31 @@ public class App : BaseEntity
     [EmailAddress]
     public string Email { get; set; }
 
-    public string GoogleURL { get; set; }
+    public string? GoogleURL { get; set; }
 
-    public string PageContent { get; set; }
+    public string? PageContent { get; set; }
 
-    public string Videolink { get; set; }
+    public string? Videolink { get; set; }
 
-    public string Pricing { get; set; }
+    public string? Pricing { get; set; }
 
     public int ThemeId { get; set; }
 
-    public string Domain { get; set; }
+    public string? Domain { get; set; }
 
-    public string Svglink { get; set; }
+    public string? Svglink { get; set; }
 
-    public bool IsDeleted { get; set; }
+    public string? PlaystoreLink { get; set; }
 
-    public bool IsActive { get; set; }
-
-    public string PlaystoreLink { get; set; }
-
-    public string AppstoreLink { get; set; }
+    public string? AppstoreLink { get; set; }
 
     public DateTime CreatedDate { get; set; }
 
     public DateTime UpdatedDate { get; set; }
 
-    public string AboutUs { get; set; }
+    public string? AboutUs { get; set; }
+    public string? SEO { get; set; }
+    public string? Style { get; set; }
 
-    public virtual ICollection<Waitlist> WaitLists { get; set; }
 
-    public virtual User User { get; set; }
 }

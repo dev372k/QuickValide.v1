@@ -14,7 +14,7 @@ public class Waitlist :BaseEntity
     [EmailAddress]
     public string Email { get; set; }
 
-    public DateTime Time { get; set; }
+    public DateTime Time { get; set; } = DateTime.UtcNow;
 
     [MaxLength(255)]
     public string SelectedPlan { get; set; }

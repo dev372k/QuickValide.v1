@@ -12,6 +12,8 @@ public class ApplicationDBContext : DbContext
 
     public DbSet<App> Apps { get; set; }
     public DbSet<User> Users { get; set; }
+    public DbSet<Waitlist> Waitlists { get; set; }
+    public DbSet<UserSubscription> UserSubscriptions { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
