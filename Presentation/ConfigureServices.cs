@@ -1,4 +1,5 @@
 ﻿using Application.Implementations;
+using Application.Services;
 using Domain;
 using Domain.Repositories.Services;
 using Infrastructure.Services;
@@ -28,7 +29,8 @@ public static class ConfigureServices
         services.AddScoped<UserRepo>();
         services.AddScoped<AppRepo>();
         services.AddScoped<WaitlistRepo>();
-        services.AddScoped<UserSubscriptionRepo>();
+        services.AddScoped<UserSubscriptionRepo>(); 
+        services.AddScoped<SettingRepo>();
     }
 
     public static void Misc(this IServiceCollection services, IConfiguration configuration)
@@ -92,7 +94,7 @@ public static class ConfigureServices
         services.AddScoped<IEmailService, EmailService>();
         services.AddScoped<IGPTService, GPTService>();
         services.AddHttpClient<ICloudflareService, CloudflareService>();
-
+        
     }
 
     public static void Database(this IServiceCollection services, IConfiguration configuration)
