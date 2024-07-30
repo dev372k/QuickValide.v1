@@ -15,6 +15,7 @@ namespace Shared.Exceptions.Messages
         public const string RECORD_NOT_FOUND = "Record not found";
         public const string FAILED = "Failed";
         public const string Email_ALREADY_EXIST = "Email already exists.";
+        public const string Email_ALREADY_SUBSCRIBED = "Email already subscribed.";
         public const string SUBSCRIPTION_DOESNOT_EXIST = "Subscription does not exist.";
         public const string SUBSCRIPTION_ALREADY_EXIST = "Subscription already exists.";
 

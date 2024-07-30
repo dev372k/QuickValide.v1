@@ -29,6 +29,8 @@ public static class ConfigureServices
     {
         services.AddScoped<IUserRepo, UserRepo>();
         services.AddScoped<IAppRepo, AppRepo>();
+        services.AddScoped<IWaitlistRepo, WaitlistRepo>();
+        services.AddScoped<IUserSubscriptionRepo, UserSubscriptionRepo>();
     }
 
     public static void Misc(this IServiceCollection services, IConfiguration configuration)
