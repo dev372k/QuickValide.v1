@@ -27,6 +27,7 @@ public class App : BaseEntity
     public int ThemeId { get; set; }
 
     public string? Domain { get; set; }
+    public string? RecordId { get; set; }
 
     public string? Svglink { get; set; }
 

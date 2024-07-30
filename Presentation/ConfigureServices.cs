@@ -93,7 +93,7 @@ public static class ConfigureServices
         services.AddScoped<IFileService, FileService>();
         services.AddScoped<IEmailService, EmailService>();
         services.AddScoped<IGPTService, GPTService>();
-        services.AddScoped<ICloudflareService, CloudflareService>();
+        services.AddHttpClient<ICloudflareService, CloudflareService>();
 
     }
 

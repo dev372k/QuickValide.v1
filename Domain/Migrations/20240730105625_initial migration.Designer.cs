@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Domain.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20240730065638_initial migration")]
+    [Migration("20240730105625_initial migration")]
     partial class initialmigration
     {
         /// <inheritdoc />
@@ -73,6 +73,9 @@ namespace Domain.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Pricing")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RecordId")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SEO")

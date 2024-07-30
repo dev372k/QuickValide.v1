@@ -50,6 +50,7 @@ public class AppRepo : IAppRepo
         if (app == null)
             throw new Exception(ExceptionMessages.APP_DOESNOT_EXIST);
 
+        await _cloudflareService.DeleteDomain(app.RecordId);
         app.IsDeleted = true;
         _context.SaveChanges();
     }
@@ -65,8 +66,8 @@ public class AppRepo : IAppRepo
         if (appExist)
             throw new CustomException(HttpStatusCode.BadRequest, ExceptionMessages.DOMAIN_ALREADY_EXIST);
 
-        await _cloudflareService.DomainConfig(app.Domain);
-
+        var recordId = await _cloudflareService.AddDomain(app.Domain);
+        app.RecordId = recordId;
         _context.Apps.Add(app);
         _context.SaveChanges();
     }
@@ -77,12 +78,12 @@ public class AppRepo : IAppRepo
         string? Domain = _context.Apps.Where(_ => _.Id == app.Id).FirstOrDefault().Domain;
 
         if (app.Domain != Domain)
-            await _cloudflareService.DomainConfig(app.Domain);
+            await _cloudflareService.UpdateDomain(app.RecordId, app.Domain);
 
         _context.Apps.Update(app);
         _context.SaveChanges();
     }
-
+    
     public async Task<GetAppDTO> GetAsync(int id)
     {
         var app = await _context.Apps.Where(_ => _.Id == id).FirstOrDefaultAsync() ?? throw new CustomException(HttpStatusCode.OK, ExceptionMessages.APP_DOESNOT_EXIST);

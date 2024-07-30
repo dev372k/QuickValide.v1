@@ -46,6 +46,7 @@ namespace Domain.Migrations
                     Pricing = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ThemeId = table.Column<int>(type: "int", nullable: false),
                     Domain = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RecordId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Svglink = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PlaystoreLink = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     AppstoreLink = table.Column<string>(type: "nvarchar(max)", nullable: true),

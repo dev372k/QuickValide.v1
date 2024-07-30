@@ -2,6 +2,8 @@
 {
     public interface ICloudflareService
     {
-        Task DomainConfig(string subdomain);
+        Task<string> AddDomain(string subdomain);
+        Task UpdateDomain(string recordId, string newSubdomain);
+        Task DeleteDomain(string recordId);
     }
 }

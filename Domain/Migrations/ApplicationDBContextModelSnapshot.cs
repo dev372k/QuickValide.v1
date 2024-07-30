@@ -72,6 +72,9 @@ namespace Domain.Migrations
                     b.Property<string>("Pricing")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("RecordId")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("SEO")
                         .HasColumnType("nvarchar(max)");
 
