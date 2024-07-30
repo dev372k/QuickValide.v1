@@ -18,13 +18,13 @@ public class UserRepo : IUserRepo
 {
     private ApplicationDBContext _context;
     private IEmailService _emailService;
-    private IAppRepo _iAppRepo;
+    private IAppRepo _appRepo;
 
-    public UserRepo(ApplicationDBContext context, IEmailService emailService, IAppRepo iAppRepo)
+    public UserRepo(ApplicationDBContext context, IEmailService emailService, IAppRepo appRepo)
     {
         _context = context;
         _emailService = emailService;
-        _iAppRepo = iAppRepo;
+        _appRepo = appRepo;
     }
 
     public async Task<int> AddAsync(AddUserDTO dto)
@@ -45,7 +45,11 @@ public class UserRepo : IUserRepo
         _context.Users.Add(user);
         _context.SaveChanges();
 
-        await _iAppRepo.AddAsync(new Shared.DTOs.AppDTOs.AddAppDTO() {Name =dto.Name,Email = dto.Email });
+        string guid = Guid.NewGuid().ToString().Replace("-", "");
+        string sampleAppName = $"Sample App {guid}";
+        string sampleAppDomain = $"sample-app-{guid}".ToLower();
+
+        await _appRepo.AddAsync(new Shared.DTOs.AppDTOs.AddAppDTO() {UserId = user.Id, Name = sampleAppName, Email = dto.Email, Domain = sampleAppDomain });
 
         return user.Id;
     }

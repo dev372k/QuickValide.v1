@@ -18,5 +18,4 @@ public class WaitlistController(IWaitlistRepo _waitlistRepo) : ControllerBase
     [HttpGet("{appid}")]
     public async Task<IActionResult> Get(int appid)
         => Ok(await _waitlistRepo.GetAsync(appid).ToResponseAsync());
-
 }

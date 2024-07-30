@@ -1,4 +1,7 @@
 ﻿using Domain.Repositories.Services;
+using Shared.Exceptions.Messages;
+using Shared.Exceptions;
+using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
 
@@ -7,40 +10,40 @@ namespace Infrastructure.Services
 {
     public class CloudflareService : ICloudflareService
     {
-        public async Task<bool> DomainConfig(string Domain, string CName)
+        public async Task DomainConfig(string subdomain)
         {
-            string apiToken = "c_cU62m8QyZgqEcuJ1dgSSFmt7uRTbZdAq7waE95"; // Replace with your API token
-            string zoneId = "86422e5b473c4a0f0f12cee049e27fe6"; // Replace with your Zone ID
-            using (var client = new HttpClient())
+            try
             {
-                client.BaseAddress = new Uri("https://api.cloudflare.com/client/v4/");
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
-
-                var data = new
+                Appsettings appsettings = Appsettings.Instance;
+                string apiToken = appsettings.GetValue("Cloudflare:APIToken"); 
+                string zoneId = appsettings.GetValue("Cloudflare:ZoneId"); 
+                using (var client = new HttpClient())
                 {
-                    type = "CNAME",
-                    name = Domain,
-                    content = CName,
-                    ttl = 1, // Set TTL to 1 to indicate 'auto' in Cloudflare
-                    proxied = true // Set to true to enable Cloudflare's proxy
-                };
+                    client.BaseAddress = new Uri("https://api.cloudflare.com/client/v4/");
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
 
-                var json = Newtonsoft.Json.JsonConvert.SerializeObject(data);
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                    var data = new
+                    {
+                        type = "CNAME",
+                        name = subdomain,
+                        content = appsettings.GetValue("Cloudflare:CNAME"),
+                        ttl = 1,
+                        proxied = true 
+                    };
 
-                var response = await client.PostAsync($"zones/{zoneId}/dns_records", content);
+                    var json = Newtonsoft.Json.JsonConvert.SerializeObject(data);
+                    var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                if (response.IsSuccessStatusCode)
-                {
-                    return true;
+                    var response = await client.PostAsync($"zones/{zoneId}/dns_records", content);
+
+                    if (!response.IsSuccessStatusCode)
+                        throw new CustomException(HttpStatusCode.BadRequest, ExceptionMessages.DOMAIN_CONFIGURATION_ISSUE);
                 }
-                else
-                {
-                    string result = await response.Content.ReadAsStringAsync();
-                    Console.WriteLine($"Error creating CNAME record: {result}");
-                    return false;
-                }
+            }
+            catch (Exception ex)
+            {
+                throw new CustomException(HttpStatusCode.BadRequest, ex.Message);
             }
         }
     }

@@ -2,6 +2,6 @@
 {
     public interface ICloudflareService
     {
-        Task<bool> DomainConfig(string Domain, string CName);
+        Task DomainConfig(string subdomain);
     }
 }
