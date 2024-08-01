@@ -21,7 +21,7 @@ namespace Presentation.Controllers
         public async Task<IActionResult> Get(int id)
             => Ok(await _settingRepo.GetAsync(id).ToResponseAsync());
 
-        [HttpPut("{appId:int},{IsLive:bool}"), Authorize]
+        [HttpPut("{appId:int}/{IsLive:bool}"), Authorize]
         [IsAuthorized(["Admin", "User"])]
         public async Task<IActionResult> Put(int appId, bool IsLive)
             => Ok(await _settingRepo.UpdateAppStatusAsync(appId, IsLive).ToResponseAsync(message: ResponseMessages.APP_UPDATED));
