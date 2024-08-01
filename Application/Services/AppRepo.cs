@@ -32,7 +32,9 @@ public class AppRepo
         .Select(app => new GetAppNameDTO
         {
             Id = app.Id,
-            Name = app.Name
+            Name = app.Name,
+            Domain = app.Domain,
+            CreatedAt = app.CreatedAt
         })
         .ToListAsync();
 
