@@ -33,7 +33,7 @@ public class AppRepo
         {
             Id = app.Id,
             Name = app.Name,
-            Domain = app.Domain,
+            Domain = app.Domain!,
             CreatedAt = app.CreatedAt
         })
         .ToListAsync();
