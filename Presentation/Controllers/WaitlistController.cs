@@ -19,4 +19,5 @@ public class WaitlistController(WaitlistRepo _waitlistRepo) : ControllerBase
     [IsAuthorized(["Admin", "User"])]
     public async Task<IActionResult> Get(int appid)
         => Ok(await _waitlistRepo.GetAsync(appid).ToResponseAsync());
+
 }
