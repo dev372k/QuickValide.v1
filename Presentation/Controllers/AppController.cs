@@ -35,4 +35,14 @@ public class AppController(AppRepo _appRepo) : ControllerBase
     [IsAuthorized(["Admin", "User"])]
     public async Task<IActionResult> Delete(int id)
         => Ok(await _appRepo.DeleteAsync(id).ToResponseAsync(message: ResponseMessages.APP_UPDATED));
+    
+    [HttpPatch("{id}/analytics"), Authorize]
+    [IsAuthorized(["Admin", "User"])]
+    public async Task<IActionResult> Analytics(int id, [FromBody] string url)
+        => Ok(await _appRepo.UpdateGoogleURLAsync(id, url).ToResponseAsync(message: ResponseMessages.APP_UPDATED));
+    
+    [HttpGet("{id}/analytics"), Authorize]
+    [IsAuthorized(["Admin", "User"])]
+    public async Task<IActionResult> Analytics(int id)
+        => Ok(await _appRepo.GetGoogleURLAsync(id).ToResponseAsync());
 }
