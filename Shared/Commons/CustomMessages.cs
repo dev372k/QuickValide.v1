@@ -9,6 +9,7 @@ namespace Shared.Commons;
 public class ResponseMessages
 {
     public const string USER_ADDED = "User registered successfully";
+    public const string USER_UPDATED = "User updatedeted successfully";
     public const string USER_DELETED = "User deleted successfully";
     public const string APP_ADDED = "App registered successfully";
     public const string APP_DELETED = "App deleted successfully";
