@@ -1,5 +1,4 @@
 ﻿using Application.Implementations;
-using Domain.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Commons;
@@ -23,7 +22,7 @@ public class AuthController(UserRepo _userRepo) : ControllerBase
     [HttpPost("google")]
     public async Task<IActionResult> Google(GoogleLoginDTO request)
         => Ok(await _userRepo.GoogleLoginAsync(request).ToResponseAsync());
-    
+
     [HttpPost("forgot-password/{email}")]
     public async Task<IActionResult> ForgetPassword(string email)
         => Ok(await _userRepo.UpdatePasswordAsync(email).ToResponseAsync(message: ResponseMessages.NEW_PASSWORD_SENT));
@@ -33,7 +32,7 @@ public class AuthController(UserRepo _userRepo) : ControllerBase
     public async Task<IActionResult> Get()
         => Ok(await _userRepo.GetAsync().ToResponseAsync());
 
-    [HttpGet("{id}"),Authorize]
+    [HttpGet("{id}"), Authorize]
     [IsAuthorized(["Admin", "User"])]
     public async Task<IActionResult> Get(int id)
         => Ok(await _userRepo.GetAsync(id).ToResponseAsync());
@@ -41,7 +40,7 @@ public class AuthController(UserRepo _userRepo) : ControllerBase
     [HttpPut("{id}"), Authorize]
     [IsAuthorized(["Admin", "User"])]
     public async Task<IActionResult> Put(int id, UpdateUserDTO request)
-        => Ok(await _userRepo.UpdateAsync(id, request).ToResponseAsync(message: ResponseMessages.USER_DELETED));
+        => Ok(await _userRepo.UpdateAsync(id, request).ToResponseAsync(message: ResponseMessages.USER_UPDATED));
 
     [HttpDelete("{id}"), Authorize]
     [IsAuthorized(["Admin", "User"])]

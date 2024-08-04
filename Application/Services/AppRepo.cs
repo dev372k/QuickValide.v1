@@ -110,5 +110,20 @@ public class AppRepo
 
         return app.GoogleURL;
     }
+    public async Task UpdateSEOAsync(int id, UpdateSEODTO dto)
+    {
+        var app = await _context.Set<App>().Where(_ => _.Id == id).FirstOrDefaultAsync()
+            ?? throw new CustomException(HttpStatusCode.OK, ExceptionMessages.APP_DOESNOT_EXIST);
 
+        app.SEO = JsonConvert.SerializeObject(dto);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task<GetSEODTO> GetSEOAsync(int id)
+    {
+        var app = await _context.Set<App>().Where(_ => _.Id == id).FirstOrDefaultAsync()
+            ?? throw new CustomException(HttpStatusCode.OK, ExceptionMessages.APP_DOESNOT_EXIST);
+
+        return JsonConvert.DeserializeObject<GetSEODTO>(app.SEO);
+    }
 }

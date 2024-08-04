@@ -38,11 +38,21 @@ public class AppController(AppRepo _appRepo) : ControllerBase
 
     [HttpPatch("{id}/analytics"), Authorize]
     [IsAuthorized(["Admin", "User"])]
-    public async Task<IActionResult> Analytics(int id, AddAnalyticsDTO request)
+    public async Task<IActionResult> Analytics(int id, UpdateAnalyticsDTO request)
         => Ok(await _appRepo.UpdateGoogleURLAsync(id, request.URL).ToResponseAsync(message: ResponseMessages.APP_UPDATED));
 
     [HttpGet("{id}/analytics"), Authorize]
     [IsAuthorized(["Admin", "User"])]
     public async Task<IActionResult> Analytics(int id)
         => Ok(await _appRepo.GetGoogleURLAsync(id).ToResponseAsync());
+    
+    [HttpPatch("{id}/seo"), Authorize]
+    [IsAuthorized(["Admin", "User"])]
+    public async Task<IActionResult> SEO(int id, UpdateSEODTO request)
+        => Ok(await _appRepo.UpdateSEOAsync(id, request).ToResponseAsync(message: ResponseMessages.APP_UPDATED));
+
+    [HttpGet("{id}/seo"), Authorize]
+    [IsAuthorized(["Admin", "User"])]
+    public async Task<IActionResult> SEO(int id)
+        => Ok(await _appRepo.GetSEOAsync(id).ToResponseAsync());
 }

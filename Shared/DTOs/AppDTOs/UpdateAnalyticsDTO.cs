@@ -1,6 +1,6 @@
 ﻿namespace Shared.DTOs.AppDTOs;
 
-public class AddAnalyticsDTO
+public class UpdateAnalyticsDTO
 {
     public string URL { get; set; }
 }
