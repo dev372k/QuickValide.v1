@@ -87,7 +87,7 @@ public class AppRepo
         _context.Set<App>().Update(app);
         await _context.SaveChangesAsync();
     }
-    
+
     public async Task<GetAppDTO> GetAsync(int id)
     {
         var app = await _context.Set<App>().Where(_ => _.Id == id).FirstOrDefaultAsync() ?? throw new CustomException(HttpStatusCode.OK, ExceptionMessages.APP_DOESNOT_EXIST);
@@ -103,12 +103,12 @@ public class AppRepo
         await _context.SaveChangesAsync();
     }
 
-    public async Task<string> GetGoogleURLAsync(int id)
+    public async Task<GetAnalyticsDTO> GetGoogleURLAsync(int id)
     {
         var app = await _context.Set<App>().Where(_ => _.Id == id).FirstOrDefaultAsync()
             ?? throw new CustomException(HttpStatusCode.OK, ExceptionMessages.APP_DOESNOT_EXIST);
 
-        return app.GoogleURL;
+        return new GetAnalyticsDTO { URL = app.GoogleURL };
     }
     public async Task UpdateSEOAsync(int id, UpdateSEODTO dto)
     {
