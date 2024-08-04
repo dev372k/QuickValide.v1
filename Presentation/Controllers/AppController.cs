@@ -19,7 +19,7 @@ public class AppController(AppRepo _appRepo) : ControllerBase
     [HttpPut("{id:int}"), Authorize]
     [IsAuthorized(["Admin", "User"])]
     public async Task<IActionResult> Put(int id, UpsertAppDTO request)
-       => Ok(await _appRepo.UpdateAsync(id, request).ToResponseAsync(message: ResponseMessages.APP_UPDATED));
+        => Ok(await _appRepo.UpdateAsync(id, request).ToResponseAsync(message: ResponseMessages.APP_UPDATED));
 
     [HttpGet, Authorize]
     [IsAuthorized(["Admin", "User"])]
@@ -35,12 +35,12 @@ public class AppController(AppRepo _appRepo) : ControllerBase
     [IsAuthorized(["Admin", "User"])]
     public async Task<IActionResult> Delete(int id)
         => Ok(await _appRepo.DeleteAsync(id).ToResponseAsync(message: ResponseMessages.APP_UPDATED));
-    
+
     [HttpPatch("{id}/analytics"), Authorize]
     [IsAuthorized(["Admin", "User"])]
-    public async Task<IActionResult> Analytics(int id, [FromBody] string url)
-        => Ok(await _appRepo.UpdateGoogleURLAsync(id, url).ToResponseAsync(message: ResponseMessages.APP_UPDATED));
-    
+    public async Task<IActionResult> Analytics(int id, AddAnalyticsDTO request)
+        => Ok(await _appRepo.UpdateGoogleURLAsync(id, request.URL).ToResponseAsync(message: ResponseMessages.APP_UPDATED));
+
     [HttpGet("{id}/analytics"), Authorize]
     [IsAuthorized(["Admin", "User"])]
     public async Task<IActionResult> Analytics(int id)
