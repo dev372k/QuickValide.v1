@@ -9,6 +9,7 @@ using Shared.Exceptions.Messages;
 using Shared.Commons;
 using Google.Apis.Auth;
 using Domain.Repositories.Services;
+using Shared;
 
 namespace Application.Implementations;
 
@@ -17,12 +18,14 @@ public class UserRepo
     private IApplicationDBContext _context;
     private IEmailService _emailService;
     private AppRepo _appRepo;
+    private IStateHelper _stateHelper;
 
-    public UserRepo(IApplicationDBContext context, IEmailService emailService, AppRepo appRepo)
+    public UserRepo(IApplicationDBContext context, IEmailService emailService, AppRepo appRepo, IStateHelper stateHelper)
     {
         _context = context;
         _emailService = emailService;
         _appRepo = appRepo;
+        _stateHelper = stateHelper;
     }
 
     public async Task<int> AddAsync(AddUserDTO dto)
@@ -183,5 +186,15 @@ public class UserRepo
         user.Password = SecurityHelper.GenerateHash(newPassword);
         await _context.SaveChangesAsync();
         await _emailService.SendEmailAsync(email, EmailTemplate.NEW_PASSWORD_SUBJECT, string.Format(EmailTemplate.NEW_PASSWORD_BODY, newPassword));
+    } 
+    
+    public async Task ChangePasswordAsync(ChangePasswordDTO dto)
+    {
+        var user = await _context.Set<User>().FirstOrDefaultAsync(_ => _.Id == _stateHelper.User().Id);
+        if (user == null)
+            throw new CustomException(HttpStatusCode.OK, ExceptionMessages.USER_DOESNOT_EXIST);
+
+        user.Password = SecurityHelper.GenerateHash(dto.Password);
+        await _context.SaveChangesAsync();
     }
 }

@@ -46,4 +46,9 @@ public class AuthController(UserRepo _userRepo) : ControllerBase
     [IsAuthorized(["Admin", "User"])]
     public async Task<IActionResult> Delete(int id)
         => Ok(await _userRepo.DeleteAsync(id).ToResponseAsync(message: ResponseMessages.USER_DELETED));
+
+    [HttpPatch("change-password"), Authorize]
+    [IsAuthorized(["Admin", "User"])]
+    public async Task<IActionResult> ChangePassword(ChangePasswordDTO request)
+        => Ok(await _userRepo.ChangePasswordAsync(request).ToResponseAsync(message: ResponseMessages.USER_DELETED));
 }
