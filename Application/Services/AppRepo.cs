@@ -34,7 +34,8 @@ public class AppRepo
             Id = app.Id,
             Name = app.Name,
             Domain = app.Domain!,
-            CreatedAt = app.CreatedAt
+            CreatedAt = app.CreatedAt,
+            IsDefault = app.IsDefault
         })
         .ToListAsync();
 

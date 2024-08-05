@@ -6,5 +6,6 @@
         public string Name { get; set; }
         public string Domain { get; set; }
         public DateTime CreatedAt { get; set; }
+        public bool IsDefault { get; set; }
     }
 }
