@@ -43,6 +43,7 @@ public class App : BaseEntity
     public string? SEO { get; set; }
     public string? Style { get; set; }
     public bool IsLive { get; set; }
+    public bool IsDefault { get; set; }
 
 
 }

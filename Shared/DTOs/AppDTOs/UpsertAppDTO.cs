@@ -23,6 +23,7 @@ namespace Shared.DTOs.AppDTOs
         public string? AboutUs { get; set; } = TemplatesConstants.ABOUTUS;
         public Style? Style { get; set; }
         public SEO? SEO { get; set; }
+        public bool IsDefault { get; set; }
     }
 
 
