@@ -49,6 +49,8 @@ public class AppRepo
         var app = await _context.Set<App>().FirstOrDefaultAsync(_ => _.Id == id);
         if (app == null)
             throw new Exception(ExceptionMessages.APP_DOESNOT_EXIST);
+        else if(app.IsDefault)
+            throw new Exception(ExceptionMessages.DEFAULT_APP_CANNOT_DELETE);
 
         await _cloudflareService.DeleteDomain(app.RecordId);
         app.IsDeleted = true;
