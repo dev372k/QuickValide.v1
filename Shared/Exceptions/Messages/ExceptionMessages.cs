@@ -12,6 +12,7 @@ namespace Shared.Exceptions.Messages
         public const string DOMAIN_ALREADY_EXIST = "Domain already exists.";
         public const string DOMAIN_CONFIGURATION_ISSUE = "Domain configuration issue, please retry another domain name.";
         public const string APP_DOESNOT_EXIST = "App does not exist.";
+        public const string DEFAULT_APP_CANNOT_DELETE = "Default App cannot not be deleted.";
         public const string RECORD_NOT_FOUND = "Record not found";
         public const string FAILED = "Failed";
         public const string Email_ALREADY_EXIST = "Email already exists.";

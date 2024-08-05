@@ -21,6 +21,7 @@ namespace Shared.DTOs.AppDTOs
         public string PlaystoreLink { get; set; } = "https://play.google.com/store/games?hl=en";
         public string AppstoreLink { get; set; } = "https://www.apple.com/app-store/";
         public string? AboutUs { get; set; } = TemplatesConstants.ABOUTUS;
+        public bool IsDefault { get; set; }
         public Style? Style { get; set; }
         public SEO? SEO { get; set; }
     }

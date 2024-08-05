@@ -12,6 +12,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.ServicesRegistry(builder.Configuration);
+
 // Add services to the container.
 Log.Logger = new LoggerConfiguration()
 .MinimumLevel.Warning()
