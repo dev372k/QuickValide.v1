@@ -99,6 +99,6 @@ public static class ConfigureServices
 
     public static void Database(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDbContextPool<IApplicationDBContext, ApplicationDBContext>(opt => opt.UseSqlServer(configuration["cs"]));
+        services.AddDbContextPool<IApplicationDBContext, ApplicationDBContext>(opt => opt.UseSqlServer(configuration.GetConnectionString("cs")));
     }
 }
