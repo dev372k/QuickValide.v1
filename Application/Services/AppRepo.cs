@@ -93,10 +93,32 @@ public class AppRepo
 
     public async Task<GetAppDTO> GetAsync(int id)
     {
-        var app = await _context.Set<App>().Where(_ => _.Id == id).FirstOrDefaultAsync() ?? throw new CustomException(HttpStatusCode.OK, ExceptionMessages.APP_DOESNOT_EXIST);
-        return Mapper.Map<GetAppDTO>(app);
-    }
+        GetAppDTO getAppDTO = null;
+        var app = await _context.Set<App>().Where(_ => _.Id == id).FirstOrDefaultAsync();
 
+        if (app != null)
+        {
+            getAppDTO = Mapper.Map<GetAppDTO>(app);
+            getAppDTO.SEO = !String.IsNullOrEmpty(app?.SEO) ? JsonConvert.DeserializeObject<SEO>(app.SEO) : null; 
+            getAppDTO.Style = !String.IsNullOrEmpty(app?.Style) ? JsonConvert.DeserializeObject<Style>(app.Style) : null;
+        }
+
+        return getAppDTO;
+    }
+    public async Task<GetAppDTO> GetAsync(string name)
+    {
+        GetAppDTO getAppDTO = null;
+        var app = await _context.Set<App>().Where(_ => _.Name == name).FirstOrDefaultAsync();
+
+        if (app != null)
+        {
+            getAppDTO = Mapper.Map<GetAppDTO>(app);
+            getAppDTO.SEO = !String.IsNullOrEmpty(app?.SEO) ? JsonConvert.DeserializeObject<SEO>(app.SEO) : null;
+            getAppDTO.Style = !String.IsNullOrEmpty(app?.Style) ? JsonConvert.DeserializeObject<Style>(app.Style) : null;
+        }
+
+        return getAppDTO;
+    }
     public async Task UpdateGoogleURLAsync(int id, string url)
     {
         var app = await _context.Set<App>().Where(_ => _.Id == id).FirstOrDefaultAsync()

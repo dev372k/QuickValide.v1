@@ -31,6 +31,11 @@ public class AppController(AppRepo _appRepo) : ControllerBase
     public async Task<IActionResult> Get(int id)
         => Ok(await _appRepo.GetAsync(id).ToResponseAsync());
 
+    [HttpGet("{name}/GetByName"), Authorize]
+    [IsAuthorized(["Admin", "User"])]
+    public async Task<IActionResult> GetByName(string name)
+    => Ok(await _appRepo.GetAsync(name).ToResponseAsync());
+
     [HttpDelete("{id}"), Authorize]
     [IsAuthorized(["Admin", "User"])]
     public async Task<IActionResult> Delete(int id)
