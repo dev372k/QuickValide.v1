@@ -36,7 +36,7 @@ public class AppRepo
         {
             Id = app.Id,
             Name = app.Name,
-            Domain = $"{app.Domain!}./{_config.GetSection("BaseURL")}",
+            Domain = $"{app.Domain!}.{_config.GetSection("BaseURL").Value}",
             CreatedAt = app.CreatedAt,
             IsDefault = app.IsDefault
         })
