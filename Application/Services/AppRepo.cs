@@ -9,6 +9,7 @@ using Shared.Exceptions.Messages;
 using System.Net;
 using Shared;
 using Newtonsoft.Json;
+using Microsoft.Extensions.Configuration;
 
 namespace Application.Implementations;
 
@@ -17,12 +18,14 @@ public class AppRepo
     private readonly IApplicationDBContext _context;
     private readonly ICloudflareService _cloudflareService;
     private readonly IStateHelper _stateHelper;
+    private IConfiguration _config;
 
-    public AppRepo(IApplicationDBContext context, ICloudflareService cloudflareService, IStateHelper stateHelper)
+    public AppRepo(IApplicationDBContext context, ICloudflareService cloudflareService, IStateHelper stateHelper, IConfiguration config)
     {
         _context = context;
         _cloudflareService = cloudflareService;
         _stateHelper = stateHelper;
+        _config = config;
     }
 
     public async Task<List<GetAppNameDTO>> GetAsync()
@@ -33,7 +36,7 @@ public class AppRepo
         {
             Id = app.Id,
             Name = app.Name,
-            Domain = app.Domain!,
+            Domain = $"{app.Domain!}./{_config.GetSection("BaseURL")}",
             CreatedAt = app.CreatedAt,
             IsDefault = app.IsDefault
         })
