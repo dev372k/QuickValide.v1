@@ -9,6 +9,7 @@ using Shared.Exceptions.Messages;
 using System.Net;
 using Shared;
 using Newtonsoft.Json;
+using Microsoft.Extensions.Configuration;
 
 namespace Application.Implementations;
 
@@ -17,12 +18,14 @@ public class AppRepo
     private readonly IApplicationDBContext _context;
     private readonly ICloudflareService _cloudflareService;
     private readonly IStateHelper _stateHelper;
+    private IConfiguration _config;
 
-    public AppRepo(IApplicationDBContext context, ICloudflareService cloudflareService, IStateHelper stateHelper)
+    public AppRepo(IApplicationDBContext context, ICloudflareService cloudflareService, IStateHelper stateHelper, IConfiguration config)
     {
         _context = context;
         _cloudflareService = cloudflareService;
         _stateHelper = stateHelper;
+        _config = config;
     }
 
     public async Task<List<GetAppNameDTO>> GetAsync()
@@ -33,7 +36,7 @@ public class AppRepo
         {
             Id = app.Id,
             Name = app.Name,
-            Domain = app.Domain!,
+            Domain = $"{app.Domain!}.{_config.GetSection("BaseURL").Value}",
             CreatedAt = app.CreatedAt,
             IsDefault = app.IsDefault
         })
@@ -64,6 +67,7 @@ public class AppRepo
         request.SEO.Title = request.Name;
         app.SEO = JsonConvert.SerializeObject(request.SEO);
         app.Style = JsonConvert.SerializeObject(request.Style);
+        app.CreatedAt = DateTime.Now;
         var appExist = _context.Set<App>().Any(_ => _.Domain == app.Domain);
 
         if (appExist)
@@ -87,6 +91,7 @@ public class AppRepo
             await _cloudflareService.UpdateDomain(app.RecordId!, app.Domain!);
 
         app = Mapper.Map<App>(request);
+        app.UpdatedAt = DateTime.Now;
         _context.Set<App>().Update(app);
         await _context.SaveChangesAsync();
     }

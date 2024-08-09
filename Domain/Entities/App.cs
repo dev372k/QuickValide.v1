@@ -34,11 +34,6 @@ public class App : BaseEntity
     public string? PlaystoreLink { get; set; }
 
     public string? AppstoreLink { get; set; }
-
-    public DateTime CreatedDate { get; set; }
-
-    public DateTime UpdatedDate { get; set; }
-
     public string? AboutUs { get; set; }
     public string? SEO { get; set; }
     public string? Style { get; set; }
