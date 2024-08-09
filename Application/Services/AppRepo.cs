@@ -64,6 +64,7 @@ public class AppRepo
         request.SEO.Title = request.Name;
         app.SEO = JsonConvert.SerializeObject(request.SEO);
         app.Style = JsonConvert.SerializeObject(request.Style);
+        app.CreatedAt = DateTime.Now;
         var appExist = _context.Set<App>().Any(_ => _.Domain == app.Domain);
 
         if (appExist)
@@ -87,6 +88,7 @@ public class AppRepo
             await _cloudflareService.UpdateDomain(app.RecordId!, app.Domain!);
 
         app = Mapper.Map<App>(request);
+        app.UpdatedAt = DateTime.Now;
         _context.Set<App>().Update(app);
         await _context.SaveChangesAsync();
     }
