@@ -142,7 +142,7 @@ public class UserRepo
 
     public async Task DeleteAsync(int id)
     {
-        var user = await GetAsync(id);
+        var user = await _context.Set<User>().FirstOrDefaultAsync(_ => _.Id == id);
         if (user != null)
         {
             user.IsDeleted = true;
