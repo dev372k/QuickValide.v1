@@ -4,7 +4,8 @@ namespace Shared.DTOs.AppDTOs
 {
     public class UpsertAppDTO
     {
-        public UpsertAppDTO(){
+        public UpsertAppDTO()
+        {
             SEO = new SEO();
             Style = new Style();
         }
@@ -38,6 +39,6 @@ namespace Shared.DTOs.AppDTOs
     public class SEO
     {
         public string Title { get; set; } = String.Empty;
-        public string Description { get; set; } ="This is the description for {0}";
+        public string Description { get; set; } = "Enhance your online presence with our tailored solutions. Update this description to better reflect your content.";
     }
 }
