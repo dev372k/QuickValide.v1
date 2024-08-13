@@ -25,7 +25,7 @@ public class WaitlistRepo
 
 
         Waitlist waitlist = Mapper.Map<Waitlist>(dto);
-
+        waitlist.CreatedAt = DateTime.Now;
         _context.Set<Waitlist>().Add(waitlist);
         await _context.SaveChangesAsync();
 
