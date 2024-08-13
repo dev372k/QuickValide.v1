@@ -33,9 +33,11 @@ public class WaitlistRepo
         return waitlist.Id;
     }
 
-    public async Task<GetWaitlistDTO> GetAsync(int appid)
+    public async Task<List<GetWaitlistDTO>> GetAsync(int appid) => await _context.Set<Waitlist>().Where(_ => _.AppId == appid).Select(_ => new GetWaitlistDTO
     {
-        var waitList = await _context.Set<Waitlist>().Where(_ => _.AppId == appid).FirstOrDefaultAsync() ?? throw new CustomException(HttpStatusCode.OK, ExceptionMessages.APP_DOESNOT_EXIST);
-        return Mapper.Map<GetWaitlistDTO>(waitList);
-    }
+        Id = _.Id,
+        Email = _.Email,
+        SelectedPlan = _.SelectedPlan,
+        CreatedOn = _.CreatedAt
+    }).ToListAsync() ?? throw new CustomException(HttpStatusCode.OK, ExceptionMessages.APP_DOESNOT_EXIST);
 }
