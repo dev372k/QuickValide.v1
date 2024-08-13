@@ -21,5 +21,6 @@
         public string AboutUs { get; set; }
         public Style? Style { get; set; }
         public SEO? SEO { get; set; }
+        public bool IsDefault { get; set; }
     }
 }
