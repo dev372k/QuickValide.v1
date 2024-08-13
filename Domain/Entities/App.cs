@@ -39,6 +39,4 @@ public class App : BaseEntity
     public string? Style { get; set; }
     public bool IsLive { get; set; }
     public bool IsDefault { get; set; }
-
-    public bool IsDefault { get; set; } = false;
 }
