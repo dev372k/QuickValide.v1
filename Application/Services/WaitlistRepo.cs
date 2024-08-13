@@ -1,6 +1,5 @@
 ﻿using Domain;
 using Domain.Entities;
-using Domain.Repositories.Services;
 using Microsoft.EntityFrameworkCore;
 using Shared.DTOs.WaitlistDTOs;
 using Shared.Exceptions.Messages;
