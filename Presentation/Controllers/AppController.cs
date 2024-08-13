@@ -13,12 +13,12 @@ public class AppController(AppRepo _appRepo) : ControllerBase
 {
     [HttpPost, Authorize]
     [IsAuthorized(["Admin", "User"])]
-    public async Task<IActionResult> Post(UpsertAppDTO request)
+    public async Task<IActionResult> Post(AddAppDTO request)
         => Ok(await _appRepo.AddAsync(request).ToResponseAsync(message: ResponseMessages.APP_ADDED));
 
     [HttpPut("{id:int}"), Authorize]
     [IsAuthorized(["Admin", "User"])]
-    public async Task<IActionResult> Put(int id, UpsertAppDTO request)
+    public async Task<IActionResult> Put(int id, UpdateAppDTO request)
         => Ok(await _appRepo.UpdateAsync(id, request).ToResponseAsync(message: ResponseMessages.APP_UPDATED));
 
     [HttpGet, Authorize]
