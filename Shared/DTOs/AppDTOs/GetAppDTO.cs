@@ -19,7 +19,7 @@
         public string AppstoreLink { get; set; }
 
         public string AboutUs { get; set; }
-        public object Style { get; set; }
-        public object SEO { get; set; }
+        public Style? Style { get; set; }
+        public SEO? SEO { get; set; }
     }
 }
