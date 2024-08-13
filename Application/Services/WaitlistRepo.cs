@@ -37,6 +37,6 @@ public class WaitlistRepo
         Id = _.Id,
         Email = _.Email,
         SelectedPlan = _.SelectedPlan,
-        CreatedOn = _.CreatedAt
+        CreatedOn = _.CreatedAt.ToString("dd MMM, yyyy"),
     }).ToListAsync() ?? throw new CustomException(HttpStatusCode.OK, ExceptionMessages.APP_DOESNOT_EXIST);
 }
