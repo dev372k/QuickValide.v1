@@ -1,6 +1,5 @@
 ﻿using Domain;
 using Domain.Entities;
-using Domain.Repositories.Services;
 using Microsoft.EntityFrameworkCore;
 using Shared.DTOs.WaitlistDTOs;
 using Shared.Exceptions.Messages;
@@ -26,7 +25,7 @@ public class WaitlistRepo
 
 
         Waitlist waitlist = Mapper.Map<Waitlist>(dto);
-
+        waitlist.CreatedAt = DateTime.Now;
         _context.Set<Waitlist>().Add(waitlist);
         await _context.SaveChangesAsync();
 
@@ -38,6 +37,6 @@ public class WaitlistRepo
         Id = _.Id,
         Email = _.Email,
         SelectedPlan = _.SelectedPlan,
-        CreatedOn = _.CreatedAt
+        CreatedOn = _.CreatedAt.ToString("dd MMM, yyyy"),
     }).ToListAsync() ?? throw new CustomException(HttpStatusCode.OK, ExceptionMessages.APP_DOESNOT_EXIST);
 }

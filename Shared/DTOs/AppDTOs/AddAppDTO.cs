@@ -2,9 +2,9 @@
 
 namespace Shared.DTOs.AppDTOs
 {
-    public class UpsertAppDTO
+    public class AddAppDTO
     {
-        public UpsertAppDTO()
+        public AddAppDTO()
         {
             SEO = new SEO();
             Style = new Style();
