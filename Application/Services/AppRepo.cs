@@ -98,6 +98,7 @@ public class AppRepo
         app.PageContent = request.PageContent;
         app.ThemeId = request.ThemeId;
         app.Pricing = request.Pricing;
+        app.Logo = request.Logo;
         app.Style = JsonConvert.SerializeObject(request.Style);
         app.UpdatedAt = DateTime.Now;
 

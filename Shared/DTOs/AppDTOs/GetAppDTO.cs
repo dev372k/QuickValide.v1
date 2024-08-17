@@ -19,6 +19,7 @@
         public string AppstoreLink { get; set; }
 
         public string AboutUs { get; set; }
+        public string Logo { get; set; }
         public Style? Style { get; set; }
         public SEO? SEO { get; set; }
         public bool IsDefault { get; set; }

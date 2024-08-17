@@ -1,6 +1,8 @@
 ﻿using Domain.Entities.Base;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.Security;
+using Microsoft.EntityFrameworkCore.SqlServer.Internal;
 namespace Domain.Entities;
 
 public class App : BaseEntity
@@ -35,6 +37,7 @@ public class App : BaseEntity
 
     public string? AppstoreLink { get; set; }
     public string? AboutUs { get; set; }
+    public string? Logo { get; set; }
     public string? SEO { get; set; }
     public string? Style { get; set; }
     public bool IsLive { get; set; }
