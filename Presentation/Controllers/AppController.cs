@@ -31,8 +31,7 @@ public class AppController(AppRepo _appRepo) : ControllerBase
     public async Task<IActionResult> Get(int id)
         => Ok(await _appRepo.GetAsync(id).ToResponseAsync());
 
-    [HttpGet("{name}/GetByName"), Authorize]
-    [IsAuthorized(["Admin", "User"])]
+    [HttpGet("{name}/GetByName")]
     public async Task<IActionResult> GetByName(string name)
     => Ok(await _appRepo.GetAsync(name).ToResponseAsync());
 
