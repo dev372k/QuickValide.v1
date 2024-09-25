@@ -32,7 +32,7 @@ public class AppController(AppRepo _appRepo) : ControllerBase
         => Ok(await _appRepo.GetAsync(id).ToResponseAsync());
 
     [HttpGet("{name}/GetByName")]
-    public async Task<IActionResult> GetByName(string name)
+    public async Task<IActionResult> Get(string name)
     => Ok(await _appRepo.GetAsync(name).ToResponseAsync());
 
     [HttpDelete("{id}"), Authorize]
