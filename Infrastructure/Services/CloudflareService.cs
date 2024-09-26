@@ -31,7 +31,7 @@ public class CloudflareService : ICloudflareService
 
             var data = new
             {
-                type = "CNAME",
+                type = "A",
                 name = subdomain,
                 content = appsettings.GetValue("Cloudflare:CNAME"),
                 ttl = 1,
