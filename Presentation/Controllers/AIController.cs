@@ -7,6 +7,7 @@ namespace Presentation.Controllers
     [ApiController]
     public class AIController : ControllerBase
     {
+        [HttpGet]
         public IActionResult Test() => Ok();
 
     }

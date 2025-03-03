@@ -33,7 +33,7 @@ public class CloudflareService : ICloudflareService
             {
                 type = "A",
                 name = subdomain,
-                content = appsettings.GetValue("Cloudflare:CNAME"),
+                content = appsettings.GetValue("Cloudflare:Server"),
                 ttl = 1,
                 proxied = true
             };
@@ -99,9 +99,9 @@ public class CloudflareService : ICloudflareService
 
             var data = new
             {
-                type = "CNAME", // The type of DNS record (e.g., CNAME, A, etc.)
+                type = "A", // The type of DNS record (e.g., CNAME, A, etc.)
                 name = newSubdomain, // The new subdomain name
-                content = appsettings.GetValue("Cloudflare:CNAME"), // The new target of the CNAME
+                content = appsettings.GetValue("Cloudflare:Server"), // The new target of the CNAME
                 ttl = 1, // Time to live (in seconds)
                 proxied = true // Whether the record is proxied through Cloudflare
             };
