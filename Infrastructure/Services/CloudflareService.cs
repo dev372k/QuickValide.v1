@@ -12,11 +12,11 @@ namespace Infrastructure.Services;
 public class CloudflareService : ICloudflareService
 {
     private readonly HttpClient _httpClient;
-
     public CloudflareService(HttpClient httpClient)
     {
         _httpClient = httpClient;
     }
+
     public async Task<string> AddDomain(string subdomain)
     {
         try
@@ -31,8 +31,8 @@ public class CloudflareService : ICloudflareService
 
             var data = new
             {
-                type = "A",
-                name = subdomain,
+                type = appsettings.GetValue("Cloudflare:Type"),
+                name = subdomain + "." + appsettings.GetValue("BaseURL"),
                 content = appsettings.GetValue("Cloudflare:Server"),
                 ttl = 1,
                 proxied = true
@@ -59,7 +59,6 @@ public class CloudflareService : ICloudflareService
             throw new CustomException(HttpStatusCode.BadRequest, ex.Message);
         }
     }
-
     public async Task DeleteDomain(string recordId)
     {
         try
@@ -83,7 +82,6 @@ public class CloudflareService : ICloudflareService
             throw new CustomException(HttpStatusCode.BadRequest, ex.Message);
         }
     }
-
     public async Task UpdateDomain(string recordId, string newSubdomain)
     {
         try
@@ -92,15 +90,14 @@ public class CloudflareService : ICloudflareService
             string apiToken = appsettings.GetValue("Cloudflare:APIToken");
             string zoneId = appsettings.GetValue("Cloudflare:ZoneId");
 
-
             _httpClient.BaseAddress = new Uri("https://api.cloudflare.com/client/v4/");
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
 
             var data = new
             {
-                type = "A", // The type of DNS record (e.g., CNAME, A, etc.)
-                name = newSubdomain, // The new subdomain name
+                type = appsettings.GetValue("Cloudflare:Type"), // The type of DNS record (e.g., CNAME, A, etc.)
+                name = newSubdomain + "." + appsettings.GetValue("BaseURL"),
                 content = appsettings.GetValue("Cloudflare:Server"), // The new target of the CNAME
                 ttl = 1, // Time to live (in seconds)
                 proxied = true // Whether the record is proxied through Cloudflare
